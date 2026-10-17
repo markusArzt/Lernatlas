@@ -625,7 +625,15 @@ function handleSrsRating(rating) {
 // Speicher. Neues Deck = Datendatei + ein Eintrag in DECK_CONFIGS + ein Eintrag in AREAS (siehe ERWEITERUNG.md).
 // Ablauf: „Lernen“ = fällige Karten + neue Karten (Tageslimit) · „Freies Üben“ = alle Karten gemischt.
 // ============================================================
-const RATING_LABELS = ['Gar nicht', 'Kaum', 'Unsicher', 'Gut', 'Sicher', 'Perfekt'];
+// Bewertungsstufen (5): „Nicht gewusst“ fasst die beiden schwächsten zusammen (Wert 0).
+// Werte bleiben die Engine-Grade 0–5; die Taste 1–5 wählt der Reihe nach.
+const RATINGS = [
+    { rating: 0, label: 'Nicht gewusst' },
+    { rating: 2, label: 'Unsicher' },
+    { rating: 3, label: 'Gut' },
+    { rating: 4, label: 'Sicher' },
+    { rating: 5, label: 'Perfekt' },
+];
 const NEW_LIMIT_OPTIONS = [5, 10, 20, 30, 50, 100];
 
 class FlashDeck {
@@ -704,8 +712,8 @@ class FlashDeck {
 
     // ── Aufbau der Oberfläche ────────────────────────────────
     build() {
-        const rating = RATING_LABELS.map((label, i) =>
-            `<button class="fc-rate-btn r${i}" data-rating="${i}"><span>${label}</span><span class="fc-rate-sub"></span><span class="rate-key">${i + 1}</span></button>`
+        const rating = RATINGS.map((r, i) =>
+            `<button class="fc-rate-btn r${r.rating}" data-rating="${r.rating}"><span>${r.label}</span><span class="fc-rate-sub"></span><span class="rate-key">${i + 1}</span></button>`
         ).join('');
         const limits = NEW_LIMIT_OPTIONS.map(n => `<option value="${n}">${n}</option>`).join('');
         this.root.innerHTML = `
@@ -1019,7 +1027,7 @@ class FlashDeck {
     handleKey(e) {
         if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); this.flip(); }
         else if (e.key === 'Escape') this.skip();
-        else if (e.key >= '1' && e.key <= '6') this.rate(parseInt(e.key) - 1);
+        else if (e.key >= '1' && e.key <= '5') { const r = RATINGS[parseInt(e.key) - 1]; if (r) this.rate(r.rating); }
     }
 }
 
@@ -1339,7 +1347,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (currentModule === 'wissen') {
             if (e.key === 'Escape') wissenSkip();
             else if (e.key === 'Enter') { e.preventDefault(); checkWissenAnswer(); }
-            else if (wissenPhase === 'answered' && e.key >= '1' && e.key <= '6') handleSrsRating(parseInt(e.key) - 1);
+            else if (wissenPhase === 'answered' && e.key >= '1' && e.key <= '5') { const r = RATINGS[parseInt(e.key) - 1]; if (r) handleSrsRating(r.rating); }
             else if (['a','b','c','d','e'].includes(e.key.toLowerCase())) selectWissenAnswer(e.key.toUpperCase());
         }
     });

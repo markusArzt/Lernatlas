@@ -1,13 +1,16 @@
 // Lernatlas – Spaced-Repetition-Engine
-// SM-2 mit Bewertungen 0–5, tagesgenau geplant. Wird von Wissen und allen Flashcard-Decks genutzt.
+// Gradabhängige Planung (FSRS-nah), Bewertungen 0–5, tagesgenau. Wird von Wissen und allen Flashcard-Decks genutzt.
 //
 // Wichtige Regeln (Details: ERWEITERUNG.md → „Spaced Repetition“):
-//  • Fälligkeit zählt in Kalendertagen: Eine Karte, die heute „in 1 Tag“ fällig wird, ist morgen ab 00:00 fällig
-//    (nicht erst zur selben Uhrzeit wie heute).
-//  • Bewertung < 3 = vergessen: Intervall zurück auf 1 Tag, EF sinkt nur leicht (−0,2),
-//    und die Karte kommt in derselben Sitzung nach ein paar Karten nochmal.
+//  • Fälligkeit zählt in Kalendertagen: Eine Karte, die heute „in 1 Tag“ fällig wird, ist morgen ab 00:00 fällig.
+//  • Der Grad bestimmt das Intervall SCHON beim ersten Mal: Gut → 1 Tag, Sicher → 3 Tage, Perfekt → 7 Tage.
+//    So entsteht ein echtes Spektrum statt nur „morgen“. (Das war vorher das Problem: erste Antwort immer 1 Tag.)
+//  • Bei jeder weiteren Wiederholung wächst das Intervall = altes Intervall × Leichtigkeit (EF) × Grad-Faktor
+//    (Gut 0,8 · Sicher 1,0 · Perfekt 1,3) – besser gekonnt heißt also spürbar längerer Abstand.
+//  • Bewertung < 3 = vergessen: Intervall zurück auf 1 Tag, EF −0,2, Karte kommt in derselben Sitzung nochmal.
+//    (Im Wissen-Modul bedeuten 0–2 ohnehin „falsch beantwortet“.)
 //  • Bewertung ≥ 3 bei einer noch nicht fälligen Karte (Freies Üben) ändert den Plan nicht.
-//  • EF wird nach SM-2-Formel angepasst und bleibt zwischen 1,3 und 3,0.
+//  • EF (Leichtigkeit) wird nach SM-2-Formel angepasst und bleibt zwischen 1,3 und 3,0.
 
 (function (root) {
     'use strict';
@@ -19,6 +22,11 @@
     const LAPSE_EF_PENALTY = 0.2;
     const MATURE_DAYS = 21;     // ab diesem Intervall gilt eine Karte als „bekannt“
     const RELEARN_GAP = 4;      // vergessene Karte kommt nach so vielen anderen Karten wieder
+
+    // Erst-Intervall je Grad (Tage) – was eine frische Karte nach EINER Antwort bekommt
+    const INIT_STABILITY = { 3: 1, 4: 3, 5: 7 };
+    // Zuwachs-Faktor je Grad bei weiteren Wiederholungen (relativ zur Leichtigkeit)
+    const GRADE_FACTOR = { 3: 0.8, 4: 1.0, 5: 1.3 };
 
     // ── Zeit-Helfer ──────────────────────────────────────────────────
     function startOfDay(ts) {
@@ -91,12 +99,15 @@
             interval = 1;
             again = true;
         } else {
-            if (repetitions === 0) interval = 1;
-            else if (repetitions === 1) interval = 6;
-            else interval = Math.max(interval + 1, Math.round(interval * ef));
-            repetitions += 1;
+            // Leichtigkeit zuerst anpassen, dann Intervall daraus bestimmen
             const q = 5 - rating;
             ef = clampEf(ef + 0.1 - q * (0.08 + q * 0.02));
+            if (repetitions === 0) {
+                interval = INIT_STABILITY[rating];                       // gradabhängiges Erst-Intervall
+            } else {
+                interval = Math.max(interval + 1, Math.round(interval * ef * GRADE_FACTOR[rating]));
+            }
+            repetitions += 1;
         }
 
         return {
