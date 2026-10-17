@@ -802,7 +802,7 @@ button { cursor: pointer; }
     .controls .btn, .fc-actions .btn:not(.btn-quiet) { flex: 1 1 auto; }
 }
 @media (min-width: 641px) {
-    .rating-grid, .fc-rating-grid { grid-template-columns: repeat(6, 1fr); }
+    .rating-grid, .fc-rating-grid { grid-template-columns: repeat(5, 1fr); }
 }
 
 @media (prefers-reduced-motion: reduce) {
