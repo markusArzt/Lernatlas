@@ -19,18 +19,25 @@
     <div class="topband" aria-hidden="true"></div>
     <div class="container">
         <header class="header">
-            <h1>Lernatlas</h1>
-            <p class="subtitle">Lernen für das Medizinstudium an der MedUni Wien</p>
+            <button id="home-link" class="home-link" aria-label="Zur Startseite">
+                <h1>Lernatlas</h1>
+            </button>
+            <p class="subtitle">Lernbegleiter für das Medizinstudium an der MedUni Wien</p>
         </header>
         
+        <div id="data-warning" class="data-warning" role="alert" hidden></div>
+
         <nav class="main-navigation" aria-label="Bereiche und Kategorien">
             <div class="area-tabs" id="area-tabs"></div>
             <div class="nav-tabs" id="module-tabs"></div>
         </nav>
         
         <main class="game-container">
+            <!-- Startseite (Inhalt per JavaScript) -->
+            <div id="home-module" class="module home active"></div>
+
             <!-- Wortflüssigkeits-Modul -->
-            <div id="wortfluessigkeit-module" class="module active">
+            <div id="wortfluessigkeit-module" class="module">
                 <div class="difficulty-selector">
                     <h3>Schwierigkeitsgrad wählen:</h3>
                     <div class="difficulty-options">

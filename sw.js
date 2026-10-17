@@ -1,8 +1,8 @@
-// Lernatlas – Service Worker
+// Lernatlas – Service Worker (Offline-Cache)
 // WICHTIG: CACHE-Version hochzählen bei jedem Deployment mit Änderungen!
-const CACHE = 'medat-v9';
+const CACHE = 'medat-v12';
 
-const STATIC = [
+const FILES = [
   './',
   './index.html',
   './css/style.css',
@@ -12,9 +12,6 @@ const STATIC = [
   './assets/fonts/eb-garamond-latin-wght-normal.woff2',
   './assets/fonts/eb-garamond-latin-wght-italic.woff2',
   './assets/fonts/public-sans-latin-wght-normal.woff2',
-];
-
-const DATA = [
   './data/aufnahmetest/wortfluessigkeit.js',
   './data/aufnahmetest/zahlenfolgen.js',
   './data/aufnahmetest/wissen.js',
@@ -22,45 +19,45 @@ const DATA = [
   './data/block2/knochen.js',
 ];
 
-// Install: cache alle Dateien
+// Install: jede Datei einzeln cachen. Fehlt eine auf dem Server, wird nur sie übersprungen –
+// der Service Worker wird trotzdem aktiv (früher blockierte eine fehlende Datei jedes Update).
 self.addEventListener('install', e => {
   e.waitUntil(
-    // cache:'reload' → immer frisch vom Server, nie aus dem HTTP-Cache des Browsers
-    caches.open(CACHE).then(c => c.addAll([...STATIC, ...DATA].map(u => new Request(u, { cache: 'reload' }))))
+    caches.open(CACHE).then(c =>
+      Promise.allSettled(FILES.map(u => c.add(new Request(u, { cache: 'reload' }))))
+    )
   );
   self.skipWaiting();
 });
 
-// Activate: alten Cache sofort löschen
+// Activate: alte Caches löschen
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys().then(keys =>
       Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-    )
+    ).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// Fetch-Strategie:
-// Datendateien → Network-first (Updates kommen sofort an)
-// Alles andere  → Cache-first  (schnell, offline-fähig)
+// Fetch: erst Netz, bei Fehler (offline) der Cache. So kommt jede neue Version sofort an,
+// und die App läuft trotzdem ohne Internet. Fehlerseiten (404 …) werden nie gecacht.
 self.addEventListener('fetch', e => {
-  const url = new URL(e.request.url);
-  const isData = DATA.some(f => url.pathname.endsWith(f.replace('./', '/')));
+  const req = e.request;
+  if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
 
-  if (isData) {
-    e.respondWith(
-      fetch(e.request)
-        .then(response => {
-          const clone = response.clone();
-          caches.open(CACHE).then(c => c.put(e.request, clone));
-          return response;
-        })
-        .catch(() => caches.match(e.request))
-    );
-  } else {
-    e.respondWith(
-      caches.match(e.request).then(cached => cached || fetch(e.request))
-    );
-  }
+  e.respondWith(
+    fetch(req)
+      .then(res => {
+        if (res.ok) {
+          const copy = res.clone();
+          caches.open(CACHE).then(c => c.put(req, copy));
+        }
+        return res;
+      })
+      .catch(() =>
+        caches.match(req).then(hit =>
+          hit || (req.mode === 'navigate' ? caches.match('./index.html') : Response.error())
+        )
+      )
+  );
 });
