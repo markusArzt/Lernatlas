@@ -1277,7 +1277,13 @@ function renderHome() {
         </section>
         <p class="home-hint">Mit dem Schalter rechts pausierst du eine Lektion oder einen ganzen Block. Pausierte zählen nicht in „Heute“, der Lernstand bleibt erhalten.</p>
         <div class="home-areas">${areasHtml}</div>
+        <p class="home-update">
+            <button class="btn btn-quiet" id="check-update">Nach Updates suchen</button>
+            <span id="update-status" role="status">${updateStatus}</span>
+        </p>
     `;
+    const cu = el.querySelector('#check-update');
+    if (cu) cu.addEventListener('click', checkForUpdate);
 
     const go = el.querySelector('.home-go');
     if (go) go.addEventListener('click', () => startDue(go.dataset.go));
@@ -1386,7 +1392,56 @@ document.addEventListener('DOMContentLoaded', function() {
     goHome();
 });
 
-// Service Worker (Offline-Cache)
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js');
+// ============================================================
+// SERVICE WORKER + UPDATES
+// Neue Version = neuer Service Worker (CACHE in sw.js hochgezählt). Er aktiviert sich selbst; die offene Seite
+// läuft aber noch mit dem alten Code. Deshalb: Banner „Neue Version verfügbar“ → Klick lädt neu.
+// Der Lernstand liegt im localStorage und bleibt dabei unberührt.
+// ============================================================
+let swReg = null;
+let updateReady = false;
+let updateStatus = '';
+
+function showUpdateBanner() {
+    const b = document.getElementById('update-banner');
+    if (b) b.hidden = false;
 }
+
+function setUpdateStatus(text) {
+    updateStatus = text;
+    const el = document.getElementById('update-status');
+    if (el) el.textContent = text;
+}
+
+function checkForUpdate() {
+    if (updateReady) { showUpdateBanner(); return; }
+    if (!swReg) { setUpdateStatus('Updates lassen sich nur in der installierten App mit Internet prüfen.'); return; }
+    setUpdateStatus('Suche nach Updates …');
+    swReg.update().then(() => {
+        if (updateReady) return;
+        if (swReg.installing || swReg.waiting) setUpdateStatus('Update wird geladen …');   // Banner folgt automatisch
+        else setUpdateStatus('Du hast die neueste Version.');
+    }).catch(() => setUpdateStatus('Keine Verbindung – später nochmal versuchen.'));
+}
+
+if ('serviceWorker' in navigator) {
+    const hadController = !!navigator.serviceWorker.controller;   // beim allerersten Besuch gibt es noch kein „Update“
+    navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
+        .then(reg => { swReg = reg; })
+        .catch(() => { /* ohne Service Worker läuft die App trotzdem */ });
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!hadController) return;
+        updateReady = true;
+        setUpdateStatus('Neue Version bereit.');
+        showUpdateBanner();
+    });
+    // Beim Zurückkehren in die App (iPhone: aus dem Hintergrund) im Stillen prüfen
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && swReg) swReg.update().catch(() => {});
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const reload = document.getElementById('update-reload');
+    if (reload) reload.addEventListener('click', () => location.reload());
+});
