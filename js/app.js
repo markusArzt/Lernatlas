@@ -672,7 +672,8 @@ class FlashDeck {
         this.prefs = {
             topic: this.topics.includes(p.topic) ? p.topic : 'all',
             dir: ['la-de', 'de-la', 'both'].includes(p.dir) ? p.dir : (this.cfg.defaultDir || 'both'),
-            newLimit: NEW_LIMIT_OPTIONS.includes(p.newLimit) ? p.newLimit : (this.cfg.defaultNewLimit || 20)
+            newLimit: NEW_LIMIT_OPTIONS.includes(p.newLimit) ? p.newLimit : (this.cfg.defaultNewLimit || 20),
+            shuffle: typeof p.shuffle === 'boolean' ? p.shuffle : false
         };
         this.newDay = Number.isFinite(m.newDay) ? m.newDay : 0;
         this.newCount = Number.isFinite(m.newCount) ? m.newCount : 0;
@@ -757,6 +758,7 @@ class FlashDeck {
                 <p class="panel-note" data-ref="info"></p>
                 <div class="fc-settings">
                     <label>Neue Karten pro Tag<select class="fc-select" data-ref="limit">${limits}</select></label>
+                    <label class="fc-check"><input type="checkbox" data-ref="shuffle"> Neue Karten mischen</label>
                     <span data-ref="newToday"></span>
                 </div>
                 <div class="panel-actions">
@@ -776,6 +778,12 @@ class FlashDeck {
         this.ref.limit.value = String(this.prefs.newLimit);
         this.ref.limit.addEventListener('change', () => {
             this.prefs.newLimit = parseInt(this.ref.limit.value);
+            this.saveMeta();
+            this.begin(this.mode);
+        });
+        this.ref.shuffle.checked = this.prefs.shuffle;
+        this.ref.shuffle.addEventListener('change', () => {
+            this.prefs.shuffle = this.ref.shuffle.checked;
             this.saveMeta();
             this.begin(this.mode);
         });
@@ -859,14 +867,16 @@ class FlashDeck {
                 else if (k === 'new') fresh.push(c);
             });
             const left = Math.max(0, this.prefs.newLimit - this.introducedToday());
-            let news = fresh.slice(0, left);
+            // „Mischen“ an → zufällige Auswahl UND Reihenfolge der neuen Karten; aus → Themen-/Dateireihenfolge
+            const candidates = this.prefs.shuffle ? SRS.shuffle(fresh) : fresh;
+            let news = candidates.slice(0, left);
             if (this.hasDirs && this.prefs.dir === 'both') {
                 // Hin- und Rückrichtung derselben Vokabel nicht direkt hintereinander
                 news = [...news.filter(c => c.dir !== 'de-la'), ...news.filter(c => c.dir === 'de-la')];
             }
             ids = [...SRS.shuffle(due), ...news.map(c => String(c.id))];
         } else {
-            ids = SRS.shuffle(pool.map(c => String(c.id)));
+            ids = SRS.shuffle(pool.map(c => String(c.id)));   // Freies Üben ist immer gemischt
         }
         this.session = SRS.createSession({ ids, store: this.store, now: Date.now });
         this.builtDay = SRS.startOfDay(now);
