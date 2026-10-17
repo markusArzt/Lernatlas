@@ -1,4 +1,4 @@
-// MedAT Trainer – Spaced-Repetition-Engine
+// Lernatlas – Spaced-Repetition-Engine
 // SM-2 mit Bewertungen 0–5, tagesgenau geplant. Wird von Wissen und allen Flashcard-Decks genutzt.
 //
 // Wichtige Regeln (Details: ERWEITERUNG.md → „Spaced Repetition“):

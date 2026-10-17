@@ -1,4 +1,4 @@
-// MedAT Trainer – App-Logik (Navigation, Module, Flashcard-Decks)
+// Lernatlas – App-Logik (Navigation, Module, Flashcard-Decks)
 // ============================================================
 // DATEN
 // ============================================================
@@ -48,7 +48,6 @@ let wissenCorrect = 0;
 let wissenTotal = 0;
 let wissenUsed = new Set();
 const subjectNames = { all:'Alle', biologie:'Biologie', chemie:'Chemie', physik:'Physik', mathematik:'Mathematik' };
-const subjectIcons = { all:'📚', biologie:'🧬', chemie:'⚗️', physik:'⚡', mathematik:'📐' };
 
 // ============================================================
 // WORTFLÜSSIGKEIT
@@ -357,12 +356,10 @@ function renderWissenQuestion(q, badgeSuffix) {
     wissenCurrent = q;
     resetWissenAnswerUi();
 
-    const levelLabel = q.level ? { leicht:'🟢 Leicht', mittel:'🟡 Mittel', schwer:'🔴 Schwer' }[q.level] || '' : '✏️ Eigene';
+    const levelLabel = { leicht:'Leicht', mittel:'Mittel', schwer:'Schwer' }[q.level] || 'Eigene Frage';
     const badge = document.getElementById('wissen-subject-badge');
-    badge.textContent = subjectIcons[q.subj] + ' ' + subjectNames[q.subj] + ' · ' + levelLabel + (badgeSuffix || '');
-    badge.style.background = q.level
-        ? { leicht:'#16a34a', mittel:'#d97706', schwer:'#dc2626' }[q.level] || 'var(--accent-emerald)'
-        : 'var(--accent-emerald)';
+    badge.textContent = subjectNames[q.subj] + ', ' + levelLabel + (badgeSuffix || '');
+    badge.dataset.level = q.level || 'eigene';
     document.getElementById('wissen-question').textContent = q.q;
 
     const numOpts = q.opts.length;
@@ -521,14 +518,14 @@ function srsUpdateDisplay() {
     const btn = document.getElementById('srs-due-btn');
     const info = document.getElementById('srs-next-info');
     if (due > 0) {
-        btn.textContent = '📚 ' + due + ' fällige Karte' + (due !== 1 ? 'n' : '') + ' üben';
+        btn.textContent = due + ' fällige Karte' + (due !== 1 ? 'n' : '') + ' üben';
         btn.style.opacity = '1';
         info.textContent = '';
     } else {
-        btn.textContent = '✅ Alle erledigt!';
+        btn.textContent = 'Alles erledigt';
         btn.style.opacity = '0.6';
         const next = SRS.daysToNextDue(wissenStore, getAllWissenPool().map(q => q._key), Date.now());
-        info.textContent = next ? 'Nächste Wiederholung: ' + SRS.fmtDays(next) : 'Alle Karten bekannt 🎓';
+        info.textContent = next ? 'Nächste Wiederholung: ' + SRS.fmtDays(next) : 'Alle Karten bekannt';
     }
 }
 
@@ -556,13 +553,13 @@ function generateNextSrsCard() {
         srsUpdateDisplay();
         resetWissenAnswerUi();
         const fb = document.getElementById('wissen-feedback');
-        fb.textContent = '🎉 Alle fälligen Karten erledigt!';
+        fb.textContent = 'Alle fälligen Karten sind erledigt.';
         fb.className = 'feedback correct';
         return;
     }
     getAllWissenPool();
     renderWissenQuestion({ ..._wissenByKey.get(key) },
-        ' · 🗓 noch ' + srsSession.remaining() + (srsSession.isRelearning(key) ? ' ↻' : ''));
+        ', noch ' + srsSession.remaining() + (srsSession.isRelearning(key) ? ' ↻' : ''));
 }
 
 function handleSrsRating(rating) {
@@ -588,7 +585,7 @@ function handleSrsRating(rating) {
 // Speicher. Neues Deck = Datendatei + ein Eintrag in DECK_CONFIGS + ein Eintrag in AREAS (siehe ERWEITERUNG.md).
 // Ablauf: „Lernen“ = fällige Karten + neue Karten (Tageslimit) · „Freies Üben“ = alle Karten gemischt.
 // ============================================================
-const RATING_LABELS = [['😰', 'Gar nicht'], ['😟', 'Kaum'], ['😐', 'Unsicher'], ['🙂', 'Gut'], ['😊', 'Sicher'], ['🎯', 'Perfekt']];
+const RATING_LABELS = ['Gar nicht', 'Kaum', 'Unsicher', 'Gut', 'Sicher', 'Perfekt'];
 const NEW_LIMIT_OPTIONS = [5, 10, 20, 30, 50, 100];
 
 class FlashDeck {
@@ -658,25 +655,25 @@ class FlashDeck {
 
     // ── Aufbau der Oberfläche ────────────────────────────────
     build() {
-        const rating = RATING_LABELS.map(([emoji, label], i) =>
-            `<button class="fc-rate-btn r${i}" data-rating="${i}"><span>${emoji} ${label}</span><span class="fc-rate-sub"></span></button>`
+        const rating = RATING_LABELS.map((label, i) =>
+            `<button class="fc-rate-btn r${i}" data-rating="${i}"><span>${label}</span><span class="fc-rate-sub"></span><span class="rate-key">${i + 1}</span></button>`
         ).join('');
         const limits = NEW_LIMIT_OPTIONS.map(n => `<option value="${n}">${n}</option>`).join('');
         this.root.innerHTML = `
-            <div class="word-card">
+            <section class="deck">
                 <div class="fc-filters" data-ref="filters"></div>
-                <div class="fc-card" data-ref="card" title="Klicken zum Umdrehen">
+                <div class="fc-card" data-ref="card" title="Antwort anzeigen">
                     <div class="fc-badge" data-ref="badge"></div>
                     <div class="fc-count" data-ref="count"></div>
                     <div data-ref="front">
-                        <p class="fc-label" data-ref="frontLabel">❓ Frage</p>
+                        <p class="fc-label" data-ref="frontLabel">Frage</p>
                         <p class="fc-q" data-ref="q"></p>
                     </div>
-                    <div data-ref="back" style="display:none;">
-                        <p class="fc-label">✅ Antwort</p>
-                        <p class="fc-a" data-ref="a"></p>
+                    <div class="fc-back" data-ref="back" style="display:none;">
+                        <p class="fc-label">Antwort</p>
+                        <div class="fc-a" data-ref="a"></div>
                     </div>
-                    <p class="fc-hint" data-ref="hint">Tippen zum Umdrehen</p>
+                    <p class="fc-hint" data-ref="hint">Tippen oder Leertaste zeigt die Antwort</p>
                 </div>
                 <div class="fc-done" data-ref="done" style="display:none;">
                     <div class="fc-done-title" data-ref="doneTitle"></div>
@@ -687,28 +684,28 @@ class FlashDeck {
                     <div class="fc-rating-grid">${rating}</div>
                 </div>
                 <div class="fc-actions">
-                    <button class="btn btn-secondary" data-ref="skip">⏭ Überspringen</button>
-                    <button class="btn btn-primary" data-ref="mode"></button>
+                    <button class="btn btn-quiet" data-ref="skip">Überspringen</button>
+                    <button class="btn btn-secondary" data-ref="mode"></button>
                 </div>
-                <div class="fc-feedback" data-ref="feedback"></div>
-            </div>
-            <div class="word-card fc-dash">
-                <h3>🗓 Spaced Repetition</h3>
-                <div class="stats" style="margin-bottom:1rem;">
-                    <div class="stat-item"><span class="stat-value" data-ref="cDue" style="color:#dc2626;">0</span><span class="stat-label">Fällig</span></div>
-                    <div class="stat-item"><span class="stat-value" data-ref="cLearning" style="color:#d97706;">0</span><span class="stat-label">In Lernung</span></div>
-                    <div class="stat-item"><span class="stat-value" data-ref="cMature" style="color:#16a34a;">0</span><span class="stat-label">Bekannt</span></div>
-                    <div class="stat-item"><span class="stat-value" data-ref="cNew">0</span><span class="stat-label">Neu</span></div>
+                <div class="fc-feedback" data-ref="feedback" aria-live="polite"></div>
+            </section>
+            <section class="panel fc-dash">
+                <h3>Lernstand</h3>
+                <div class="stats">
+                    <div class="stat-item is-due"><span class="stat-value" data-ref="cDue">0</span><span class="stat-label">Fällig</span></div>
+                    <div class="stat-item is-learning"><span class="stat-value" data-ref="cLearning">0</span><span class="stat-label">In Lernung</span></div>
+                    <div class="stat-item is-known"><span class="stat-value" data-ref="cMature">0</span><span class="stat-label">Bekannt</span></div>
+                    <div class="stat-item is-new"><span class="stat-value" data-ref="cNew">0</span><span class="stat-label">Neu</span></div>
                 </div>
-                <p class="fc-info" data-ref="info"></p>
+                <p class="panel-note" data-ref="info"></p>
                 <div class="fc-settings">
-                    <label>Neue Karten pro Tag: <select class="fc-select" data-ref="limit">${limits}</select></label>
+                    <label>Neue Karten pro Tag<select class="fc-select" data-ref="limit">${limits}</select></label>
                     <span data-ref="newToday"></span>
                 </div>
-                <div style="text-align:center;">
-                    <button class="btn btn-secondary" data-ref="reset" style="font-size:0.85rem; padding:0.7rem 1.5rem;">🗑 SRS zurücksetzen</button>
+                <div class="panel-actions">
+                    <button class="btn btn-quiet" data-ref="reset">Lernstand zurücksetzen</button>
                 </div>
-            </div>`;
+            </section>`;
         this.ref = {};
         this.root.querySelectorAll('[data-ref]').forEach(el => { this.ref[el.dataset.ref] = el; });
 
@@ -735,13 +732,12 @@ class FlashDeck {
         const f = this.ref.filters;
         f.innerHTML = '';
         const colors = this.cfg.topicColors || {};
-        const icons = this.cfg.topicIcons || {};
 
         if (this.topics.length > 1) {
             if (this.topics.length <= 4) {
                 const row = document.createElement('div');
                 row.className = 'fc-pills';
-                [['all', 'Alle'], ...this.topics.map(t => [t, (icons[t] || '') + t])].forEach(([value, label]) => {
+                [['all', 'Alle'], ...this.topics.map(t => [t, t])].forEach(([value, label]) => {
                     row.appendChild(this.pill(label, 'topic', value, colors[value]));
                 });
                 f.appendChild(row);
@@ -817,7 +813,7 @@ class FlashDeck {
         }
         this.session = SRS.createSession({ ids, store: this.store, now: Date.now });
         this.builtDay = SRS.startOfDay(now);
-        this.ref.mode.textContent = mode === 'learn' ? '🔀 Freies Üben' : '📚 Zurück zum Lernen';
+        this.ref.mode.textContent = mode === 'learn' ? 'Freies Üben' : 'Zurück zum Lernen';
         this.ref.mode.title = mode === 'learn'
             ? 'Alle Karten gemischt üben – der Lernplan ändert sich nur, wenn du etwas vergessen hast'
             : 'Fällige und neue Karten lernen';
@@ -846,14 +842,28 @@ class FlashDeck {
         r.rating.style.display = 'none';
         r.skip.style.display = '';
 
-        r.frontLabel.textContent = (card.dir && this.dirLabels[card.dir]) || '❓ Frage';
+        r.frontLabel.textContent = (card.dir && this.dirLabels[card.dir]) || 'Frage';
         r.q.textContent = card.q;
-        r.a.textContent = card.a;
+        r.q.classList.toggle('is-long', card.q.length > 60);
+
+        // Antwort: erste Zeile groß, weitere Zeilen (Genitiv, Beispiel …) als Zusatz
+        const [main, ...meta] = card.a.split('\n');
+        const mainEl = document.createElement('div');
+        mainEl.className = 'fc-a-main' + (main.length > 80 ? ' is-long' : '');
+        mainEl.textContent = main;
+        const nodes = [mainEl];
+        if (meta.length) {
+            const metaEl = document.createElement('div');
+            metaEl.className = 'fc-a-meta';
+            metaEl.textContent = meta.join('\n');
+            nodes.push(metaEl);
+        }
+        r.a.replaceChildren(...nodes);
 
         const colors = this.cfg.topicColors || {};
-        const icons = this.cfg.topicIcons || {};
-        r.badge.textContent = (icons[card.topic] || '') + card.topic;
-        r.badge.style.background = colors[card.topic] || '';
+        r.badge.textContent = card.topic;
+        if (colors[card.topic]) r.badge.style.setProperty('--topic-color', colors[card.topic]);
+        else r.badge.style.removeProperty('--topic-color');
         r.count.textContent = (this.session.isRelearning(String(card.id)) ? '↻ ' : '') + 'Noch ' + this.session.remaining();
         r.feedback.textContent = '';
     }
@@ -875,13 +885,13 @@ class FlashDeck {
             r.doneTitle.textContent = 'Keine Karten';
             lines.push('In dieser Auswahl gibt es keine Karten.');
         } else if (this.mode === 'practice') {
-            r.doneTitle.textContent = '🔁 Alle Karten durchgegangen';
+            r.doneTitle.textContent = 'Alle Karten durchgegangen';
             lines.push('Mit „Zurück zum Lernen“ geht es mit dem Lernplan weiter.');
         } else {
-            r.doneTitle.textContent = '🎉 Für heute geschafft!';
+            r.doneTitle.textContent = 'Für heute geschafft';
             if (c.new > 0) lines.push('Noch ' + c.new + ' neue Karten warten – Tageslimit (' + this.prefs.newLimit + ') erreicht. Du kannst es unten erhöhen.');
             if (next) lines.push('Nächste Wiederholung: ' + SRS.fmtDays(next));
-            else if (c.new === 0) lines.push('Alle Karten gelernt 🎓');
+            else if (c.new === 0) lines.push('Alle Karten gelernt.');
         }
         r.doneText.textContent = lines.join('\n');
         this.updateDashboard();
@@ -892,7 +902,6 @@ class FlashDeck {
         const r = this.ref;
         this.flipped = true;
         r.card.classList.add('flipped');
-        r.front.style.display = 'none';
         r.back.style.display = '';
         r.hint.style.display = 'none';
         r.rating.style.display = 'block';
@@ -954,7 +963,7 @@ class FlashDeck {
         r.info.textContent = c.due > 0
             ? c.due + ' Karte' + (c.due !== 1 ? 'n' : '') + ' fällig!'
             : next ? 'Nächste Wiederholung: ' + SRS.fmtDays(next)
-            : c.new > 0 ? '' : 'Alle Karten bekannt 🎓';
+            : c.new > 0 ? '' : 'Alle Karten bekannt';
         r.newToday.textContent = 'Heute neu gelernt: ' + this.introducedToday() + ' / ' + this.prefs.newLimit;
     }
 
@@ -969,8 +978,7 @@ class FlashDeck {
 const DECK_CONFIGS = [
     { moduleId: 'flashcards', storageKey: 'medat_fc_srs_v1', cards: flashcardsData,
       topicOrder: ['Biologie', 'Chemie'],
-      topicColors: { Biologie: '#166534', Chemie: '#0369a1' },
-      topicIcons: { Biologie: '🧬 ', Chemie: '⚗️ ' },
+      topicColors: { Biologie: 'var(--lymph)', Chemie: 'var(--blue)' },
       defaultNewLimit: 20 },
     { moduleId: 'b2knochen', storageKey: 'medat_srs_b2_knochen_v1', cards: block2KnochenCards,
       dirLabels: block2KnochenDirLabels, defaultDir: 'la-de', defaultNewLimit: 20 },
@@ -982,14 +990,14 @@ const decks = {};
 // Neuer Block = neuer Eintrag in AREAS.
 // ============================================================
 const AREAS = [
-    { id: 'aufnahmetest', label: '🎓 Aufnahmetest', modules: [
-        { id: 'wortfluessigkeit', label: '📝 Wortflüssigkeit' },
-        { id: 'zahlenfolgen',     label: '🔢 Zahlenfolgen' },
-        { id: 'wissen',           label: '🧬 Wissen' },
-        { id: 'flashcards',       label: '🃏 Flashcards' },
+    { id: 'aufnahmetest', label: 'Aufnahmetest', modules: [
+        { id: 'wortfluessigkeit', label: 'Wortflüssigkeit' },
+        { id: 'zahlenfolgen',     label: 'Zahlenfolgen' },
+        { id: 'wissen',           label: 'Wissen' },
+        { id: 'flashcards',       label: 'Flashcards' },
     ] },
-    { id: 'block2', label: '🦴 Block 2', modules: [
-        { id: 'b2knochen', label: '🦴 Knochen- und Bandpraktikum' },
+    { id: 'block2', label: 'Block 2', modules: [
+        { id: 'b2knochen', label: 'Knochen- und Bandpraktikum' },
     ] },
 ];
 const NAV_KEY = 'medat_nav_v1';
