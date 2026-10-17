@@ -2,15 +2,41 @@
 
 ## Dateistruktur
 
+Siehe `README.md` → „Dateien“. Kurz: `js/app.js` (App), `js/srs.js` (Spaced Repetition), `data/<bereich>/*.js` (Inhalte), `sw.js` (Offline-Cache).
+
+---
+
+## Neuen Block anlegen (z. B. Block 3)
+
+Ein Block = ein Bereich in der oberen Navigationsleiste, darin eine oder mehrere Kategorien. Für Latein-/Lernkarten-Kategorien:
+
+1. **Karten erzeugen.** Markdown-Vokabeldatei nach `quellen/block3/` legen und
+   `python3 tools/import_vokabeln.py quellen/block3/NAME.md data/block3/xyz.js` ausführen
+   (oder Karten von Hand schreiben: `{ id, topic, q, a }`, siehe unten). In der erzeugten Datei die Konstanten umbenennen
+   (`block2KnochenCards` → z. B. `block3XyzCards`) bzw. im Importskript anpassen.
+2. **Datei einbinden:** in `index.html` neben den anderen Daten-Skripten `<script src="data/block3/xyz.js"></script>` ergänzen, in `sw.js` in die Liste `DATA` aufnehmen.
+3. **Deck eintragen:** in `js/app.js` in `DECK_CONFIGS` einen Eintrag ergänzen:
+   ```js
+   { moduleId: 'b3xyz', storageKey: 'medat_srs_b3_xyz_v1', cards: block3XyzCards,
+     defaultNewLimit: 20 }
+   ```
+   Optional: `dirLabels` + `defaultDir` (Hin-/Rückrichtung), `topicColors`, `topicIcons`, `topicOrder`.
+   Der `storageKey` muss pro Deck eindeutig sein und darf später nicht geändert werden (sonst ist der Lernfortschritt weg).
+4. **Navigation:** in `js/app.js` in `AREAS` einen Bereich bzw. eine Kategorie ergänzen:
+   ```js
+   { id: 'block3', label: '🧠 Block 3', modules: [ { id: 'b3xyz', label: '🧠 Kategorie-Name' } ] },
+   ```
+5. `sw.js`: `CACHE` hochzählen, committen, pushen.
+
+**Kartenschema:**
+```js
+{ id: 'eindeutig-und-stabil',   // nie ändern, sonst geht der Lernfortschritt dieser Karte verloren
+  topic: 'Thema',               // Themenfilter (bis 4 Themen als Buttons, darüber als Auswahlliste)
+  dir: 'la-de',                 // optional: Richtung, wenn das Deck Hin-/Rückrichtung hat
+  q: 'Frage',  a: 'Antwort' }   // \n = Zeilenumbruch
 ```
-medat-trainer/
-├── index.html              ← Haupt-App (HTML + CSS + Logik)
-├── data_wortfluessigkeit.js ← 137 Wörter
-├── data_zahlenfolgen.js    ← 60 Zahlenfolgen-Aufgaben
-├── data_wissen.js          ← 564 Wissensfragen (Bio/Chemie/Physik/Mathe)
-├── data_figuren.js         ← 20 Figuren-Aufgaben (Canvas)
-└── ERWEITERUNG.md          ← Diese Anleitung
-```
+
+---
 
 ## Deployment & Cache-Verwaltung
 
@@ -20,15 +46,15 @@ Wenn du neue Fragen oder andere Daten pushst, **muss** die Cache-Version in `sw.
 
 In `sw.js`, erste Zeile ändern:
 ```js
-const CACHE = 'medat-v3';  // → 'medat-v4', 'medat-v5', ...
+const CACHE = 'medat-v8';  // → 'medat-v9', 'medat-v10', ...
 ```
 
 Dann committen und pushen — GitHub Actions deployt automatisch, und beim nächsten Öffnen der App wird der alte Cache verworfen.
 
 ### Fetch-Strategie
 
-- **Datendateien** (`data_*.js`): Network-first — beim Öffnen wird immer die neueste Version vom Server geholt, Fallback auf Cache wenn offline
-- **App-Shell** (`index.html`, Icons): Cache-first — bleibt schnell und offline-fähig
+- **Datendateien** (`data/**/*.js`): Network-first — beim Öffnen wird immer die neueste Version vom Server geholt, Fallback auf Cache wenn offline
+- **App-Shell** (`index.html`, `css/`, `js/`, Icons): Cache-first — bleibt schnell und offline-fähig
 
 ### Manueller Cache-Reset (iPhone)
 
@@ -37,13 +63,13 @@ Einstellungen → Safari → Erweitert → Websitedaten → Deine GitHub-Pages-U
 
 
 
-Alle Dateien in **einem Ordner** behalten und `index.html` im Browser öffnen.
+Die Ordnerstruktur unverändert lassen und `index.html` im Browser öffnen.
 Bei `file://`-Protokoll muss der Browser lokale Scripts erlauben (Chrome: `--allow-file-access-from-files`).
 Alternativ: einfacher lokaler Server z.B. `python3 -m http.server 8080`.
 
 ---
 
-## Wissensfragen erweitern (`data_wissen.js`)
+## Wissensfragen erweitern (`data/aufnahmetest/wissen.js`)
 
 ### Schema
 
@@ -60,7 +86,7 @@ Alternativ: einfacher lokaler Server z.B. `python3 -m http.server 8080`.
 
 ### Beispiel: Neue Biologie-Frage einfügen
 
-In `data_wissen.js` im `biologie: [...]` Array am Ende vor dem `]` einfügen:
+In `data/aufnahmetest/wissen.js` im `biologie: [...]` Array am Ende vor dem `]` einfügen:
 
 ```js
 { q: 'Was ist die Funktion der Ribosomen?',
@@ -81,7 +107,7 @@ In `data_wissen.js` im `biologie: [...]` Array am Ende vor dem `]` einfügen:
 
 ---
 
-## Zahlenfolgen erweitern (`data_zahlenfolgen.js`)
+## Zahlenfolgen erweitern (`data/aufnahmetest/zahlenfolgen.js`)
 
 ```js
 { sequence: [2, 4, 8, '?', 32, '?'],
@@ -94,7 +120,7 @@ In `data_wissen.js` im `biologie: [...]` Array am Ende vor dem `]` einfügen:
 
 ---
 
-## Wortflüssigkeit erweitern (`data_wortfluessigkeit.js`)
+## Wortflüssigkeit erweitern (`data/aufnahmetest/wortfluessigkeit.js`)
 
 ```js
 // In wordFluencyWords.short / .medium / .long einfügen:
@@ -105,23 +131,12 @@ Kategorien: `short` (≤5 Buchstaben), `medium` (6–8), `long` (9+).
 
 ---
 
-## Figuren erweitern (`data_figuren.js`)
+---
 
-```js
-{ correct: 'B',
-  parts(ctx, w, h) {
-      // Zeichne Einzelteile mit fzRect(), fzPoly(), fzCircle(), fzArc()
-      fzRect(ctx, 20, 30, 60, 40, FZ_F, FZ_S);
-  },
-  opts: {
-      A: (ctx,w,h) => fzCircle(ctx, w/2, h/2, 35, FZ_F, FZ_S),
-      B: (ctx,w,h) => fzRect(ctx, w/2-35, h/2-25, 70, 50, FZ_F, FZ_S),
-      C: (ctx,w,h) => fzPoly(ctx, [[w/2,15],[w-15,h-15],[15,h-15]], FZ_F, FZ_S),
-      D: (ctx,w,h) => fzPoly(ctx, [[w/2-30,h/2],[w/2,h/2-30],[w/2+30,h/2],[w/2,h/2+30]], FZ_F, FZ_S),
-  }
-},
-```
+## Spaced Repetition (`js/srs.js`)
 
-Verfügbare Hilfsfunktionen: `fzPoly(ctx, pts, fill, stroke)`, `fzCircle(ctx, x, y, r, fill, stroke)`,
-`fzRect(ctx, x, y, w, h, fill, stroke)`, `fzArc(ctx, x, y, r, a1, a2, fill, stroke)`.
-Konstanten: `FZ_F` (Füllfarbe Hellblau), `FZ_S` (Strichfarbe Dunkelblau).
+Gemeinsame Engine (`js/srs.js`) für Wissen und alle Flashcard-Decks – Details und Regeln in der `README.md`. Wichtig beim Erweitern:
+
+- **Flashcards:** Der Lernstand hängt an der Karten-`id`. IDs nie ändern oder wiederverwenden.
+- **Wissensfragen:** Der Lernstand hängt am Fragetext (Hash). Wird der Text einer Frage geändert, gilt sie als neue Karte.
+- Die Konstanten (Start-EF, Mindest-/Höchst-EF, „bekannt“ ab 21 Tagen, Abstand für Wiederholung vergessener Karten) stehen oben in `js/srs.js`.
