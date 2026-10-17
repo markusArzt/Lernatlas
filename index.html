@@ -5,22 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="MedAT">
-    <meta name="theme-color" content="#1a365d">
+    <meta name="apple-mobile-web-app-title" content="Lernatlas">
+    <meta name="theme-color" content="#14508f" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0a3560" media="(prefers-color-scheme: dark)">
+    <meta name="color-scheme" content="light dark">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
-    <title>MedAT Trainer</title>
+    <title>Lernatlas – Medizin an der MedUni Wien</title>
     
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <div class="topband" aria-hidden="true"></div>
     <div class="container">
         <header class="header">
-            <h1>MedAT Trainer</h1>
-            <p class="subtitle">Aufnahmetest &amp; Studium – Lernen mit Spaced Repetition</p>
+            <h1>Lernatlas</h1>
+            <p class="subtitle">Lernen für das Medizinstudium an der MedUni Wien</p>
         </header>
         
-        <nav class="main-navigation">
+        <nav class="main-navigation" aria-label="Bereiche und Kategorien">
             <div class="area-tabs" id="area-tabs"></div>
             <div class="nav-tabs" id="module-tabs"></div>
         </nav>
@@ -72,9 +75,9 @@
                     </div>
                     
                     <div class="controls">
-                        <button id="show-word-btn" class="btn btn-secondary">💡 Wort anzeigen</button>
-                        <button id="check-answer-btn" class="btn btn-primary">✓ Antwort prüfen</button>
-                        <button id="new-word-btn" class="btn btn-secondary">🔄 Neue Aufgabe</button>
+                        <button id="show-word-btn" class="btn btn-secondary">Wort anzeigen</button>
+                        <button id="check-answer-btn" class="btn btn-primary">Antwort prüfen</button>
+                        <button id="new-word-btn" class="btn btn-secondary">Neue Aufgabe</button>
                     </div>
                     
                     <div id="feedback" class="feedback hidden"></div>
@@ -104,7 +107,7 @@
             <div id="zahlenfolgen-module" class="module">
                 <div class="word-card">
                     <div class="question-section">
-                        <h3 style="margin-bottom: 1.5rem;">Erkenne die Regel und ergänze die Zahlenfolge:</h3>
+                        <h3>Erkenne die Regel und ergänze die Zahlenfolge:</h3>
                         <div id="zf-sequence" class="zf-sequence"></div>
                     </div>
 
@@ -135,9 +138,9 @@
                     </div>
 
                     <div class="controls">
-                        <button id="zf-show-btn" class="btn btn-secondary">💡 Lösung anzeigen</button>
-                        <button id="zf-check-btn" class="btn btn-primary">✓ Antwort prüfen</button>
-                        <button id="zf-new-btn" class="btn btn-secondary">🔄 Neue Aufgabe</button>
+                        <button id="zf-show-btn" class="btn btn-secondary">Lösung anzeigen</button>
+                        <button id="zf-check-btn" class="btn btn-primary">Antwort prüfen</button>
+                        <button id="zf-new-btn" class="btn btn-secondary">Neue Aufgabe</button>
                     </div>
 
                     <div id="zf-feedback" class="feedback hidden"></div>
@@ -165,28 +168,18 @@
                     <h3>Fachbereich wählen:</h3>
                     <div class="difficulty-options">
                         <button class="difficulty-btn active" data-subject="all">Alle</button>
-                        <button class="difficulty-btn" data-subject="biologie">🧬 Biologie</button>
-                        <button class="difficulty-btn" data-subject="chemie">⚗️ Chemie</button>
-                        <button class="difficulty-btn" data-subject="physik">⚡ Physik</button>
-                        <button class="difficulty-btn" data-subject="mathematik">📐 Mathematik</button>
+                        <button class="difficulty-btn" data-subject="biologie">Biologie</button>
+                        <button class="difficulty-btn" data-subject="chemie">Chemie</button>
+                        <button class="difficulty-btn" data-subject="physik">Physik</button>
+                        <button class="difficulty-btn" data-subject="mathematik">Mathematik</button>
                     </div>
                 </div>
 
                 <div class="word-card">
-                    <div style="display:flex; justify-content:center; margin-bottom:1.5rem;">
-                        <span id="wissen-subject-badge" style="
-                            background: var(--accent-gold);
-                            color: white;
-                            padding: 0.4rem 1.2rem;
-                            border-radius: 20px;
-                            font-size: 0.95rem;
-                            font-weight: 600;
-                            font-family: var(--font-serif);
-                        ">Biologie</span>
-                    </div>
+                    <div class="badge-row"><span id="wissen-subject-badge" class="subject-badge">Biologie</span></div>
 
                     <div class="question-section">
-                        <h3 id="wissen-question" style="font-size:1.25rem; line-height:1.5; margin-bottom:2rem;">Frage wird geladen…</h3>
+                        <h3 id="wissen-question" class="question-text">Frage wird geladen…</h3>
 
                         <div class="letter-options" id="wissen-options">
                             <div class="letter-option" data-option="A">
@@ -213,22 +206,22 @@
                     </div>
 
                     <div class="controls">
-                        <button id="wissen-check-btn" class="btn btn-primary">✓ Antwort prüfen</button>
-                        <button id="wissen-new-btn" class="btn btn-secondary">🔄 Neue Frage</button>
+                        <button id="wissen-check-btn" class="btn btn-primary">Antwort prüfen</button>
+                        <button id="wissen-new-btn" class="btn btn-secondary">Neue Frage</button>
                     </div>
 
                     <div id="wissen-feedback" class="feedback hidden"></div>
 
-                    <!-- SRS Bewertungsbuttons (erscheinen nach Antwort) -->
-                    <div id="srs-rating" style="display:none; margin-top:1.5rem; text-align:center;">
-                        <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:0.8rem;">Wie sicher warst du?</p>
-                        <div style="display:flex; gap:0.8rem; justify-content:center; flex-wrap:wrap;">
-                            <button class="srs-btn" data-rating="0" style="background:#dc2626; color:white;">😰 Gar nicht</button>
-                            <button class="srs-btn" data-rating="1" style="background:#ea580c; color:white;">😟 Kaum</button>
-                            <button class="srs-btn" data-rating="2" style="background:#d97706; color:white;">😐 Unsicher</button>
-                            <button class="srs-btn" data-rating="3" style="background:#65a30d; color:white;">🙂 Gut</button>
-                            <button class="srs-btn" data-rating="4" style="background:#16a34a; color:white;">😊 Sicher</button>
-                            <button class="srs-btn" data-rating="5" style="background:#0891b2; color:white;">🎯 Perfekt</button>
+                    <!-- Bewertungsskala (erscheint nach dem Prüfen) -->
+                    <div id="srs-rating" class="rating-block" style="display:none;">
+                        <p class="rating-prompt">Wie sicher warst du?</p>
+                        <div class="rating-grid">
+                            <button class="srs-btn r0" data-rating="0">Gar nicht<span class="rate-key">1</span></button>
+                            <button class="srs-btn r1" data-rating="1">Kaum<span class="rate-key">2</span></button>
+                            <button class="srs-btn r2" data-rating="2">Unsicher<span class="rate-key">3</span></button>
+                            <button class="srs-btn r3" data-rating="3">Gut<span class="rate-key">4</span></button>
+                            <button class="srs-btn r4" data-rating="4">Sicher<span class="rate-key">5</span></button>
+                            <button class="srs-btn r5" data-rating="5">Perfekt<span class="rate-key">6</span></button>
                         </div>
                     </div>
                 </div>
@@ -252,37 +245,21 @@
                     </div>
                 </div>
 
-                <!-- SRS Übersicht -->
-                <div class="word-card" style="margin-top:1rem;">
-                    <h3 style="text-align:center; color:var(--primary-navy); margin-bottom:1.2rem; font-size:1.1rem;">🗓 Spaced Repetition</h3>
-                    <div class="stats" style="margin-bottom:1rem;">
-                        <div class="stat-item">
-                            <span id="srs-due-count" class="stat-value" style="color:#dc2626;">0</span>
-                            <span class="stat-label">Fällig heute</span>
-                        </div>
-                        <div class="stat-item">
-                            <span id="srs-learning-count" class="stat-value" style="color:#d97706;">0</span>
-                            <span class="stat-label">In Lernung</span>
-                        </div>
-                        <div class="stat-item">
-                            <span id="srs-known-count" class="stat-value" style="color:#16a34a;">0</span>
-                            <span class="stat-label">Bekannt</span>
-                        </div>
-                        <div class="stat-item">
-                            <span id="srs-new-count" class="stat-value">0</span>
-                            <span class="stat-label">Neu</span>
-                        </div>
+                <!-- Lernstand -->
+                <section class="panel">
+                    <h3>Lernstand</h3>
+                    <div class="stats">
+                        <div class="stat-item is-due"><span id="srs-due-count" class="stat-value">0</span><span class="stat-label">Fällig heute</span></div>
+                        <div class="stat-item is-learning"><span id="srs-learning-count" class="stat-value">0</span><span class="stat-label">In Lernung</span></div>
+                        <div class="stat-item is-known"><span id="srs-known-count" class="stat-value">0</span><span class="stat-label">Bekannt</span></div>
+                        <div class="stat-item is-new"><span id="srs-new-count" class="stat-value">0</span><span class="stat-label">Neu</span></div>
                     </div>
-                    <div style="display:flex; gap:0.8rem; justify-content:center; flex-wrap:wrap;">
-                        <button id="srs-due-btn" class="btn btn-primary" style="font-size:0.9rem; padding:0.7rem 1.5rem;">
-                            📚 Fällige Karten üben
-                        </button>
-                        <button id="srs-reset-btn" class="btn btn-secondary" style="font-size:0.9rem; padding:0.7rem 1.5rem;">
-                            🗑 SRS zurücksetzen
-                        </button>
+                    <div class="panel-actions">
+                        <button id="srs-due-btn" class="btn btn-primary">Fällige Karten üben</button>
+                        <button id="srs-reset-btn" class="btn btn-quiet">Lernstand zurücksetzen</button>
                     </div>
-                    <p id="srs-next-info" style="text-align:center; color:var(--text-secondary); font-size:0.85rem; margin-top:0.8rem;"></p>
-                </div>
+                    <p id="srs-next-info" class="panel-note"></p>
+                </section>
             </div>
 
             <!-- Flashcard-Decks (Aufnahmetest-Flashcards, Block 2 …) werden per JavaScript erzeugt – siehe DECK_CONFIGS -->
