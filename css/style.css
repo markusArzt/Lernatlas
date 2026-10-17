@@ -37,9 +37,11 @@
     --rule: #c9d3dc;           /* Haarlinie */
     --rule-strong: #8397aa;    /* Rahmen */
     --blue: #14508f;           /* Wiener Blau */
+    --blue-deep: #0c3a6b;
     --on-blue: #ffffff;
     --band: #14508f;
     --tint-blue: #e0eaf4;
+    --graticule: rgba(20, 80, 143, 0.07);
     --artery: #b3263a;
     --nerve: #946500;
     --lymph: #23704f;
@@ -62,9 +64,11 @@
         --rule: #26394b;
         --rule-strong: #4f657b;
         --blue: #7fb4ee;
+        --blue-deep: #a9cdf5;
         --on-blue: #0d1822;
         --band: #0a3560;
         --tint-blue: #1b3148;
+        --graticule: rgba(127, 180, 238, 0.08);
         --artery: #f27a8a;
         --nerve: #e3b450;
         --lymph: #62c79f;
@@ -108,10 +112,17 @@ button { cursor: pointer; }
     padding: 1.5rem 1.25rem 4rem;
 }
 
-/* ── Kopf ────────────────────────────────────────────────────────── */
+/* ── Kopf (Masthead, führt zur Startseite) ───────────────────────── */
 .header { margin-bottom: 1.5rem; }
 
-.header h1 {
+.home-link {
+    display: inline-block;
+    background: none;
+    border: 0;
+    padding: 0;
+    text-align: left;
+}
+.home-link h1 {
     font-family: var(--serif);
     font-size: clamp(2.2rem, 6vw, 3.1rem);
     font-weight: 600;
@@ -119,12 +130,135 @@ button { cursor: pointer; }
     letter-spacing: -0.015em;
     color: var(--ink);
 }
+.home-link:hover h1 { color: var(--blue); }
 
 .subtitle {
     margin-top: 0.4rem;
     font-size: 0.95rem;
     color: var(--ink-2);
 }
+
+/* ── Startseite ──────────────────────────────────────────────────── */
+/* Frontispiz: der „Heute“-Block ist die einzige laute Stelle – Tafel mit
+   feinem Gitternetz wie eine Atlas-Karte, die fällige Zahl groß als Fokus. */
+.home-hero { margin-bottom: 2.5rem; }
+
+.home-today {
+    position: relative;
+    padding: 2.25rem 2rem 2rem;
+    background:
+        repeating-linear-gradient(0deg, var(--graticule) 0 1px, transparent 1px 2.1rem),
+        repeating-linear-gradient(90deg, var(--graticule) 0 1px, transparent 1px 2.1rem),
+        var(--plate);
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius);
+}
+.home-today::before {
+    content: '';
+    position: absolute;
+    inset: 5px;
+    border: 1px solid var(--rule);
+    pointer-events: none;
+}
+.home-today > * { position: relative; }
+
+.home-today-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ink-2);
+}
+.home-today-num {
+    font-family: var(--serif);
+    font-size: clamp(4rem, 17vw, 6.5rem);
+    font-weight: 600;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    font-variant-numeric: lining-nums tabular-nums;
+    color: var(--blue);
+}
+.home-today-num.is-zero { color: var(--ink-2); }
+.home-today-cap {
+    margin-bottom: 1.5rem;
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    color: var(--ink);
+}
+.home-today .btn-primary { min-height: 3rem; padding: 0.7rem 1.4rem; }
+.home-today-sub {
+    margin-top: 0.9rem;
+    font-size: 0.9rem;
+    color: var(--ink-2);
+}
+
+/* Bereiche als Tafeln mit Kategorie-Zeilen */
+.home-areas { display: grid; gap: 1.5rem; }
+.home-area {
+    padding: 1.4rem 1.5rem 1.5rem;
+    background: var(--plate);
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius);
+}
+.home-area-title {
+    margin-bottom: 0.9rem;
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--ink);
+}
+.home-rows { display: grid; gap: 0.5rem; }
+.home-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    padding: 0.85rem 1rem;
+    background: transparent;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    text-align: left;
+}
+.home-row:hover { background: var(--tint-blue); border-color: var(--blue); }
+.home-row-name {
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--ink);
+}
+.home-pill {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink-2);
+}
+.home-pill::before {
+    content: '';
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: currentColor;
+}
+.home-pill--due { color: var(--artery); }
+.home-pill--new { color: var(--blue); }
+.home-pill--done { color: var(--lymph); }
+.home-pill--practice { color: var(--ink-2); }
+.home-pill--practice::before { border-radius: 1px; }
+
+/* Meldung bei fehlenden Dateien */
+.data-warning {
+    margin-bottom: 1.5rem;
+    padding: 0.9rem 1.1rem;
+    background: var(--tint-bad);
+    border-left: 4px solid var(--artery);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: 0.92rem;
+}
+.data-warning[hidden] { display: none; }
+.data-warning ul { margin: 0.4rem 0 0.5rem 1.25rem; }
+.data-warning code { font-size: 0.88em; word-break: break-all; }
 
 /* ── Navigation: Bereich (oben) → Kategorie (darunter) ───────────── */
 .main-navigation { margin-bottom: 1.75rem; }
@@ -575,8 +709,14 @@ button { cursor: pointer; }
 /* ── Schmale Bildschirme ─────────────────────────────────────────── */
 @media (max-width: 640px) {
     .container { padding: 1.1rem 1rem 3rem; }
-    .area-tabs { gap: 1.4rem; }
-    .area-tab { font-size: 1.3rem; }
+    .area-tabs { gap: 1.1rem; overflow-x: auto; scrollbar-width: none; }
+    .area-tabs::-webkit-scrollbar { display: none; }
+    .area-tab { font-size: 1.25rem; white-space: nowrap; }
+
+    .home-today { padding: 1.6rem 1.25rem 1.5rem; }
+    .home-area { padding: 1.2rem 1.1rem 1.3rem; }
+    .home-row { padding: 0.75rem 0.85rem; }
+    .home-row-name { font-size: 1.1rem; }
 
     .word-card { padding: 1.4rem 1.1rem; }
     .fc-card { padding: 3rem 1.1rem 1.4rem; min-height: 15rem; }
