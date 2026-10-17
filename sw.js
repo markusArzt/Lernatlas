@@ -1,25 +1,29 @@
 // MedAT Trainer – Service Worker
 // WICHTIG: CACHE-Version hochzählen bei jedem Deployment mit Änderungen!
-const CACHE = 'medat-v6';
+const CACHE = 'medat-v8';
 
 const STATIC = [
   './',
   './index.html',
+  './css/style.css',
+  './js/srs.js',
+  './js/app.js',
   './manifest.json',
 ];
 
 const DATA = [
-  './data_wortfluessigkeit.js',
-  './data_zahlenfolgen.js',
-  './data_wissen.js',
-  './data_figuren.js',
-  './data_flashcards.js',
+  './data/aufnahmetest/wortfluessigkeit.js',
+  './data/aufnahmetest/zahlenfolgen.js',
+  './data/aufnahmetest/wissen.js',
+  './data/aufnahmetest/flashcards.js',
+  './data/block2/knochen.js',
 ];
 
 // Install: cache alle Dateien
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll([...STATIC, ...DATA]))
+    // cache:'reload' → immer frisch vom Server, nie aus dem HTTP-Cache des Browsers
+    caches.open(CACHE).then(c => c.addAll([...STATIC, ...DATA].map(u => new Request(u, { cache: 'reload' }))))
   );
   self.skipWaiting();
 });

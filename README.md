@@ -3,6 +3,15 @@
 Persönlicher Übungstrainer für den österreichischen Medizin-Aufnahmetest (MedAT / BMS).
 Läuft als Progressive Web App – im Browser, offline-fähig, ohne Installation.
 
+Die App ist in **Bereiche** gegliedert (obere Leiste), darunter liegen die **Kategorien**:
+
+| Bereich | Kategorien |
+|---|---|
+| 🎓 Aufnahmetest | Wortflüssigkeit · Zahlenfolgen · Wissen · Flashcards |
+| 🦴 Block 2 | Knochen- und Bandpraktikum (Latein-Vokabeln, 689 Karten) |
+
+Neue Blöcke: siehe `docs/ERWEITERUNG.md` → „Neuen Block anlegen“.
+
 ---
 
 ## Inhalte
@@ -42,27 +51,46 @@ Originalfragen aus den ÖH-Skripten sind mit Schwierigkeitsgrad markiert (🟢 L
 
 Fragen haben 4 oder 5 Antwortoptionen (bei 5 Optionen: E = „Keine der Antwortmöglichkeiten"). Optionen werden bei jeder Anzeige neu gemischt (Fisher-Yates).
 
-**Spaced Repetition (SM-2):** Nach jeder Antwort Selbstbewertung 0–5. Intervalle wachsen bei korrekter Antwort (1 → 6 → ×Ease-Faktor Tage). Fortschritt wird in `localStorage` gespeichert. Separater SRS-Modus für fällige Karten.
+**Spaced Repetition:** Nach jeder Antwort Selbstbewertung 0–5 (nach falscher Antwort nur 0–2). Logik siehe unten. Fortschritt in `localStorage` (`medat_srs_v3`, Schlüssel = Fach + Hash des Fragetexts, bleibt also beim Einfügen neuer Fragen stabil).
 
 ---
 
-### 🔷 Figuren zusammensetzen — 21 Aufgaben
-Einzelteile (Canvas-Zeichnungen) müssen zur richtigen Gesamtfigur (A–D) zugeordnet werden. Option E = „Keine der Lösungsmöglichkeiten". Figuren sind vollständig in JavaScript als Canvas-Zeichnungen implementiert.
+### 🃏 Flashcards (Aufnahmetest) — 192 Karten
+
+| Fach | Karten |
+|---|---|
+| Chemie | 79 |
+| Biologie | 113 |
+
+**Quelle:** Handschriftliche Mitschriften (Chemie + Biologie). Filter nach Fach.
+
+### 🦴 Block 2 · Knochen- und Bandpraktikum — 689 Karten
+
+Latein-Vokabeln zu den Lehrzielen „Knochen und -strukturen 2026“ und „Knochenverbindungen 2026“ (MedUni Wien), 12 Themen (Grammatik, Lage und Richtung, Strukturen am Knochen, Gelenke/Bänder, Bewegungen …).
+Jede Vokabel gibt es in beiden Richtungen (Latein → Deutsch, Deutsch → Latein; Filter „Beide“ möglich). Bei mehrdeutigen deutschen Begriffen (z. B. „kahnförmig“) steht ein Hinweis aus dem Beispiel auf der Vorderseite.
+Erzeugt aus `quellen/block2/knochen_latein_vokabeln.md` mit `tools/import_vokabeln.py`.
+
+### Bedienung der Flashcard-Decks
+
+- **Lernen** (Standard): fällige Karten + neue Karten (Tageslimit einstellbar, Standard 20). Vergessene Karten kommen in derselben Sitzung nach ein paar Karten nochmal.
+- **Freies Üben:** alle Karten gemischt. Der Lernplan ändert sich dabei nur, wenn du etwas vergessen hast.
+- Tippen/Leertaste → umdrehen · 1–6 → bewerten (erst nach dem Umdrehen) · Escape → überspringen
+- Unter den Bewertungsbuttons steht, wann die Karte wiederkommt.
 
 ---
 
-### 🃏 Flashcards — 120 Karten
+## Spaced Repetition (alle Module)
 
-| Fach | Topics | Karten |
-|---|---|---|
-| Chemie | Periodensystem, Bindungen, Formeln, Reaktionen, Gleichgewicht, Besondere Elemente | 35 |
-| Biologie | Zellbiologie, Embryologie, Mikro-/Makroanatomie, Nerven, Sinnesorgane, Haut, Hormone, Immunsystem, Niere, Geschlechtsorgane, Genetik, Meiose, Mutationen, Mol. Genetik, Evolution, Ökologie, Immunbiologie | 85 |
+SM-2 mit Bewertungen 0–5, gemeinsame Engine in `js/srs.js`:
 
-**Quelle:** Handschriftliche Mitschriften (Chemie + Biologie)
-
-Karten können nach Topic gefiltert werden. **Spaced Repetition (SM-2)** identisch zum Wissen-Modul, eigener Speicher-Key (`medat_fc_srs_v1`).
-
-Bedienung: Tippen → umdrehen · 1–6 → bewerten · Leertaste/Enter → umdrehen · Escape → nächste Karte
+| Regel | Verhalten |
+|---|---|
+| Fälligkeit | tagesgenau: „morgen“ heißt morgen ab 00:00 Uhr, nicht erst zur selben Uhrzeit |
+| Bewertung ≥ 3 | 1. Mal → 1 Tag, 2. Mal → 6 Tage, danach Intervall × EF (mind. +1 Tag) |
+| Bewertung < 3 | vergessen: Intervall 1 Tag, EF −0,2 (nur bei gelernten Karten), Karte kommt in der Sitzung wieder |
+| EF | nach SM-2-Formel, zwischen 1,3 und 3,0 |
+| Zu früh geübt (nicht fällig) | gewusst → Plan bleibt; vergessen → zurück auf morgen |
+| „Bekannt“ | Intervall ≥ 21 Tage; „In Lernung“ = darunter |
 
 ---
 
@@ -95,21 +123,33 @@ Dann im Browser: [http://localhost:8080](http://localhost:8080)
 
 ```
 medat-trainer/
-├── index.html                  ← App (HTML + CSS + gesamte Logik)
-├── data_wortfluessigkeit.js    ← 184 Anagramme
-├── data_zahlenfolgen.js        ← 60 Zahlenfolgen-Aufgaben
-├── data_wissen.js              ← 657 Wissensfragen
-├── data_figuren.js             ← 21 Figuren-Aufgaben (Canvas)
-├── data_flashcards.js          ← 120 Flashcards
-├── sw.js                       ← Service Worker (Offline-Cache)
-├── manifest.json               ← PWA-Manifest
-├── icon-192.png / icon-512.png ← App-Icons
-├── start.py                    ← Lokaler Server (Mac/Linux)
-├── start.bat                   ← Lokaler Server (Windows)
-├── .github/workflows/
-│   └── deploy.yml              ← GitHub Actions (Auto-Deploy)
-├── README.md                   ← Diese Datei
-└── ERWEITERUNG.md              ← Anleitung zum Erweitern
+├── index.html                       ← Seitengerüst (HTML)
+├── manifest.json                    ← PWA-Manifest
+├── sw.js                            ← Service Worker (Offline-Cache) – muss im Hauptordner liegen
+├── deploy.yml                       ← GitHub Actions (Auto-Deploy)
+├── README.md
+├── css/
+│   └── style.css                    ← alle Styles
+├── js/
+│   ├── app.js                       ← Navigation, Module, Flashcard-Decks (DECK_CONFIGS, AREAS)
+│   └── srs.js                       ← Spaced-Repetition-Engine (SM-2, tagesgenau)
+├── data/                            ← Inhalte, ein Ordner pro Bereich/Block
+│   ├── aufnahmetest/
+│   │   ├── wortfluessigkeit.js
+│   │   ├── zahlenfolgen.js
+│   │   ├── wissen.js
+│   │   └── flashcards.js
+│   └── block2/
+│       └── knochen.js               ← Latein-Vokabeln (generiert)
+├── quellen/                         ← Rohmaterial, aus dem Daten erzeugt werden
+│   └── block2/
+│       └── knochen_latein_vokabeln.md
+├── tools/
+│   └── import_vokabeln.py           ← Markdown → data/blockN/….js
+├── assets/
+│   └── icons/                       ← icon-192.png, icon-512.png
+└── docs/
+    └── ERWEITERUNG.md               ← Anleitung zum Erweitern
 ```
 
 ---
@@ -122,17 +162,18 @@ medat-trainer/
 | Alle | Enter | Antwort prüfen |
 | Alle | Escape | Neue Aufgabe |
 | Wortflüssigkeit | F1 | Wort anzeigen |
-| Flashcards | Leertaste | Karte umdrehen |
-| Flashcards | 1–6 | SRS-Bewertung |
+| Flashcards | Leertaste / Enter | Karte umdrehen |
+| Flashcards | 1–6 | SRS-Bewertung (nach dem Umdrehen) |
+| Flashcards | Escape | Karte überspringen |
+| Wissen | 1–6 | SRS-Bewertung (nach dem Prüfen) |
 
 ---
 
 ## Daten erweitern
 
-Alle Datendateien sind plain JavaScript — einfach am Ende des jeweiligen Arrays neue Einträge anhängen und auf GitHub pushen. Das Schema ist in `ERWEITERUNG.md` dokumentiert.
+Alle Datendateien (Ordner `data/`) sind plain JavaScript — einfach am Ende des jeweiligen Arrays neue Einträge anhängen und auf GitHub pushen. Das Schema ist in `docs/ERWEITERUNG.md` dokumentiert.
 
 **Neue Flashcard-Mitschrift hinzufügen:**
-1. `data_flashcards.js` öffnen
-2. Neuen Eintrag ans Array anhängen: `{ id: 121, topic: "Neues Thema", q: "Frage?", a: "Antwort." }`
-3. In `index.html` den Topic-Filter-Button ergänzen (Suche nach `fc-topic-btn`)
-4. Commit + Push → automatisch live
+1. `data/aufnahmetest/flashcards.js` öffnen
+2. Neuen Eintrag ans Array anhängen: `{ id: 193, topic: "Biologie", q: "Frage?", a: "Antwort." }` (id eindeutig und nie ändern – daran hängt der Lernfortschritt)
+3. `sw.js`: `CACHE` hochzählen, committen, pushen
