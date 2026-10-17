@@ -1,11 +1,11 @@
 {
-  "name": "MedAT Trainer",
-  "short_name": "MedAT",
-  "description": "Vorbereitung für den österreichischen Medizin-Aufnahmetest",
+  "name": "Lernatlas – Medizin an der MedUni Wien",
+  "short_name": "Lernatlas",
+  "description": "Lernbegleiter für das Medizinstudium an der MedUni Wien: Aufnahmetest, Blöcke, Spaced Repetition",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f8f5f0",
-  "theme_color": "#1a365d",
+  "background_color": "#e9eef2",
+  "theme_color": "#14508f",
   "orientation": "portrait",
   "icons": [
     {

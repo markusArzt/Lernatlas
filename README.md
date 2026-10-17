@@ -1,6 +1,6 @@
-# MedAT Trainer
+# Lernatlas
 
-Persönlicher Übungstrainer für den österreichischen Medizin-Aufnahmetest (MedAT / BMS).
+Persönlicher Lernbegleiter für das Medizinstudium an der MedUni Wien – mit Aufnahmetest-Training, Block-Karteikarten und Spaced Repetition.
 Läuft als Progressive Web App – im Browser, offline-fähig, ohne Installation.
 
 Die App ist in **Bereiche** gegliedert (obere Leiste), darunter liegen die **Kategorien**:
@@ -94,6 +94,15 @@ SM-2 mit Bewertungen 0–5, gemeinsame Engine in `js/srs.js`:
 
 ---
 
+## Design
+
+- Eine Datei steuert das Aussehen: `css/style.css`. Alle Farben stehen oben als Variablen (Hell- und Dunkelmodus folgen dem System).
+- Farbcodierung wie im Anatomie-Atlas: Rot = fällig, Ocker = in Lernung, Grün = bekannt, Blau = neu bzw. Hauptfarbe (Wiener Blau).
+- Schriften liegen lokal in `assets/fonts/` und funktionieren offline: EB Garamond (Inhalte) und Public Sans (Bedienelemente), beide unter SIL Open Font License (Lizenztexte im selben Ordner).
+- Der Name steht an drei Stellen: `index.html` (`<title>`, Überschrift), `manifest.json` (`name`, `short_name`).
+
+---
+
 ## Deployment
 
 ### GitHub Pages (empfohlen — überall erreichbar, iPhone-tauglich)
@@ -147,6 +156,7 @@ medat-trainer/
 ├── tools/
 │   └── import_vokabeln.py           ← Markdown → data/blockN/….js
 ├── assets/
+│   ├── fonts/                       ← EB Garamond, Public Sans (lokal, offline)
 │   └── icons/                       ← icon-192.png, icon-512.png
 └── docs/
     └── ERWEITERUNG.md               ← Anleitung zum Erweitern

@@ -1,6 +1,6 @@
-// MedAT Trainer – Service Worker
+// Lernatlas – Service Worker
 // WICHTIG: CACHE-Version hochzählen bei jedem Deployment mit Änderungen!
-const CACHE = 'medat-v8';
+const CACHE = 'medat-v9';
 
 const STATIC = [
   './',
@@ -9,6 +9,9 @@ const STATIC = [
   './js/srs.js',
   './js/app.js',
   './manifest.json',
+  './assets/fonts/eb-garamond-latin-wght-normal.woff2',
+  './assets/fonts/eb-garamond-latin-wght-italic.woff2',
+  './assets/fonts/public-sans-latin-wght-normal.woff2',
 ];
 
 const DATA = [
