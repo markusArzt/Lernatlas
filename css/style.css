@@ -769,6 +769,8 @@ button { cursor: pointer; }
 .fc-feedback { margin-top: 0.75rem; min-height: 1.4rem; font-size: 0.88rem; color: var(--ink-2); }
 .fc-settings { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.25rem; margin-bottom: 1rem; font-size: 0.9rem; color: var(--ink-2); }
 .fc-settings .fc-select { margin-left: 0.35rem; }
+.fc-check { display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer; }
+.fc-check input { width: 1.05rem; height: 1.05rem; accent-color: var(--blue); cursor: pointer; }
 
 /* ── Schmale Bildschirme ─────────────────────────────────────────── */
 @media (max-width: 640px) {
