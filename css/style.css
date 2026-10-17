@@ -772,6 +772,32 @@ button { cursor: pointer; }
 .fc-check { display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer; }
 .fc-check input { width: 1.05rem; height: 1.05rem; accent-color: var(--blue); cursor: pointer; }
 
+/* Update-Hinweis */
+.update-banner {
+    position: fixed;
+    left: 50%;
+    bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+    transform: translateX(-50%);
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: min(32rem, calc(100% - 2rem));
+    padding: 0.7rem 0.8rem 0.7rem 1rem;
+    background: var(--plate);
+    border: 1px solid var(--rule-strong);
+    border-left: 4px solid var(--blue);
+    border-radius: var(--radius);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+    font-size: 0.92rem;
+}
+.update-banner[hidden] { display: none; }
+.update-banner span { flex: 1 1 auto; }
+.update-banner .btn { flex: 0 0 auto; }
+
+.home-update { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.75rem; margin-top: 1.5rem; font-size: 0.88rem; color: var(--ink-2); }
+.home-update:empty { display: none; }
+
 /* ── Schmale Bildschirme ─────────────────────────────────────────── */
 @media (max-width: 640px) {
     .container { padding: 1.1rem 1rem 3rem; }
