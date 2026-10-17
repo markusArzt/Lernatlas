@@ -1137,6 +1137,26 @@ function goHome() {
     window.scrollTo(0, 0);
 }
 
+// ── Aktiv/Inaktiv: Lektionen und ganze Blöcke pausieren ──────────
+// Pausierte zählen nicht in „Heute“ und werden gedämpft dargestellt. Nichts hier
+// gespeichert = aktiv (Standard). Der Lernfortschritt bleibt beim Pausieren erhalten.
+const ACTIVE_KEY = 'medat_active_v1';
+let activeState = { areas: {}, modules: {} };
+function loadActive() {
+    try {
+        const s = JSON.parse(safeStorage.getItem(ACTIVE_KEY) || '{}') || {};
+        activeState = { areas: s.areas || {}, modules: s.modules || {} };
+    } catch (e) { activeState = { areas: {}, modules: {} }; }
+}
+function saveActive() {
+    try { safeStorage.setItem(ACTIVE_KEY, JSON.stringify(activeState)); } catch (e) { /* ignorieren */ }
+}
+function areaActive(id) { return activeState.areas[id] !== false; }
+function moduleFlag(id) { return activeState.modules[id] !== false; }           // eigener Schalter der Lektion
+function moduleActive(id) { return areaActive(areaOfModule(id).id) && moduleFlag(id); }  // tatsächlich aktiv (Block zählt mit)
+function toggleArea(id)   { activeState.areas[id] = !areaActive(id); saveActive(); renderHome(); }
+function toggleModule(id) { activeState.modules[id] = !moduleFlag(id); saveActive(); renderHome(); }
+
 // Status einer Kategorie für die Startseite
 function moduleStatus(id) {
     if (id === 'wissen') {
@@ -1155,10 +1175,10 @@ function moduleStatus(id) {
     return { due: 0, tone: 'practice', label: 'Übung' };
 }
 
-// Deck/Fach mit den meisten fälligen Karten – Ziel für „Jetzt wiederholen“
+// Deck/Fach mit den meisten fälligen Karten – Ziel für „Jetzt wiederholen“ (nur aktive)
 function bestDueTarget() {
     let best = null;
-    const consider = (id, due) => { if (due > 0 && (!best || due > best.due)) best = { id, due }; };
+    const consider = (id, due) => { if (due > 0 && moduleActive(id) && (!best || due > best.due)) best = { id, due }; };
     consider('wissen', srsCounts().due);
     Object.keys(decks).forEach(id => consider(id, decks[id].overview().due));
     return best;
@@ -1174,11 +1194,14 @@ function renderHome() {
     const el = document.getElementById('home-module');
     if (!el) return;
 
-    // Aggregat: fällig & neu verfügbar über alle Lern-Decks
+    // Aggregat: fällig & neu verfügbar – nur aktive Lektionen zählen
     let totalDue = 0, totalNew = 0;
-    const w = srsCounts();
-    totalDue += w.due;
-    Object.keys(decks).forEach(id => { const o = decks[id].overview(); totalDue += o.due; totalNew += o.newAvail; });
+    if (moduleActive('wissen')) totalDue += srsCounts().due;
+    Object.keys(decks).forEach(id => {
+        if (!moduleActive(id)) return;
+        const o = decks[id].overview();
+        totalDue += o.due; totalNew += o.newAvail;
+    });
 
     const target = bestDueTarget();
     const dueWord = totalDue === 1 ? 'fällige Wiederholung' : 'fällige Wiederholungen';
@@ -1194,16 +1217,32 @@ function renderHome() {
         sub = 'Nichts fällig. Du kannst jederzeit frei üben.';
     }
 
+    const toggle = (on, attrs, title) =>
+        `<button class="home-toggle" role="switch" aria-checked="${on}" title="${title}" ${attrs}><span class="home-toggle-track"></span></button>`;
+
     const areasHtml = areasNewestFirst().map(a => {
+        const aOn = areaActive(a.id);
         const rows = a.modules.map(m => {
-            const s = moduleStatus(m.id);
-            return `<button class="home-row" data-module="${m.id}">
-                        <span class="home-row-name">${m.label}</span>
-                        <span class="home-pill home-pill--${s.tone}">${s.label}</span>
-                    </button>`;
+            const active = moduleActive(m.id);
+            const statusHtml = active
+                ? (() => { const s = moduleStatus(m.id); return `<span class="home-pill home-pill--${s.tone}">${s.label}</span>`; })()
+                : `<span class="home-pill home-pill--off">inaktiv</span>`;
+            const t = toggle(moduleFlag(m.id),
+                `data-toggle-module="${m.id}"${aOn ? '' : ' disabled'}`,
+                moduleFlag(m.id) ? 'Lektion pausieren' : 'Lektion aktivieren');
+            return `<div class="home-row${active ? '' : ' is-off'}">
+                        <button class="home-row-main" data-module="${m.id}">
+                            <span class="home-row-name">${m.label}</span>
+                            ${statusHtml}
+                        </button>
+                        ${t}
+                    </div>`;
         }).join('');
-        return `<section class="home-area">
-                    <h2 class="home-area-title">${a.label}</h2>
+        return `<section class="home-area${aOn ? '' : ' is-off'}">
+                    <div class="home-area-head">
+                        <h2 class="home-area-title">${a.label}</h2>
+                        ${toggle(aOn, `data-toggle-area="${a.id}"`, aOn ? 'Block pausieren' : 'Block aktivieren')}
+                    </div>
                     <div class="home-rows">${rows}</div>
                 </section>`;
     }).join('');
@@ -1218,17 +1257,20 @@ function renderHome() {
                 <p class="home-today-sub">${sub}</p>
             </div>
         </section>
+        <p class="home-hint">Mit dem Schalter rechts pausierst du eine Lektion oder einen ganzen Block. Pausierte zählen nicht in „Heute“, der Lernstand bleibt erhalten.</p>
         <div class="home-areas">${areasHtml}</div>
     `;
 
     const go = el.querySelector('.home-go');
     if (go) go.addEventListener('click', () => startDue(go.dataset.go));
-    el.querySelectorAll('.home-row').forEach(r => r.addEventListener('click', () => switchModule(r.dataset.module)));
+    el.querySelectorAll('.home-row-main').forEach(r => r.addEventListener('click', () => switchModule(r.dataset.module)));
+    el.querySelectorAll('[data-toggle-module]').forEach(b => b.addEventListener('click', () => toggleModule(b.dataset.toggleModule)));
+    el.querySelectorAll('[data-toggle-area]').forEach(b => b.addEventListener('click', () => toggleArea(b.dataset.toggleArea)));
 }
 
 function firstNewTarget() {
-    const d = Object.keys(decks).find(id => decks[id].overview().newAvail > 0);
-    return d || Object.keys(decks)[0] || 'wissen';
+    const d = Object.keys(decks).find(id => moduleActive(id) && decks[id].overview().newAvail > 0);
+    return d || Object.keys(decks).find(id => moduleActive(id)) || 'wissen';
 }
 
 // ============================================================
@@ -1321,6 +1363,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Standard-Einstieg: Startseite
     loadNav();
+    loadActive();
     currentArea = AREAS[AREAS.length - 1];
     goHome();
 });
