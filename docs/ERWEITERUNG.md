@@ -1,4 +1,4 @@
-# MedAT Trainer – Fragen erweitern
+# Lernatlas – Inhalte erweitern
 
 ## Dateistruktur
 
@@ -21,7 +21,7 @@ Ein Block = ein Bereich in der oberen Navigationsleiste, darin eine oder mehrere
      defaultNewLimit: 20 }
    ```
    Optional: `dirLabels` + `defaultDir` (Hin-/Rückrichtung), `topicColors`, `topicIcons`, `topicOrder`.
-   Der `storageKey` muss pro Deck eindeutig sein und darf später nicht geändert werden (sonst ist der Lernfortschritt weg).
+   Der `storageKey` muss pro Deck eindeutig sein (die Präfixe `medat_…` bleiben bewusst bestehen, damit dein Lernfortschritt beim Umbenennen der App erhalten bleibt) und darf später nicht geändert werden (sonst ist der Lernfortschritt weg).
 4. **Navigation:** in `js/app.js` in `AREAS` einen Bereich bzw. eine Kategorie ergänzen:
    ```js
    { id: 'block3', label: '🧠 Block 3', modules: [ { id: 'b3xyz', label: '🧠 Kategorie-Name' } ] },
@@ -46,7 +46,7 @@ Wenn du neue Fragen oder andere Daten pushst, **muss** die Cache-Version in `sw.
 
 In `sw.js`, erste Zeile ändern:
 ```js
-const CACHE = 'medat-v8';  // → 'medat-v9', 'medat-v10', ...
+const CACHE = 'medat-v9';  // → 'medat-v10', 'medat-v11', ...
 ```
 
 Dann committen und pushen — GitHub Actions deployt automatisch, und beim nächsten Öffnen der App wird der alte Cache verworfen.
