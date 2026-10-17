@@ -1,4 +1,44 @@
 // Lernatlas – App-Logik (Navigation, Module, Flashcard-Decks)
+
+// ============================================================
+// START-PRÜFUNG
+// Fehlt auf dem Server eine Datei (z. B. nach einem unvollständigen Upload), startet die App trotzdem,
+// zeigt oben eine Meldung mit den fehlenden Dateien und lässt die übrigen Bereiche weiter laufen.
+// ============================================================
+const REQUIRED_FILES = [
+    { name: 'SRS',                    file: 'js/srs.js' },
+    { name: 'wordFluencyWords',       file: 'data/aufnahmetest/wortfluessigkeit.js', fallback: { short: [], medium: [], long: [] } },
+    { name: 'zahlenfolgenAufgaben',   file: 'data/aufnahmetest/zahlenfolgen.js',     fallback: [] },
+    { name: 'wissenFragen',           file: 'data/aufnahmetest/wissen.js',           fallback: { biologie: [], chemie: [], physik: [], mathematik: [] } },
+    { name: 'flashcardsData',         file: 'data/aufnahmetest/flashcards.js',       fallback: [] },
+    { name: 'block2KnochenCards',     file: 'data/block2/knochen.js',                fallback: [] },
+    { name: 'block2KnochenDirLabels', file: 'data/block2/knochen.js',                fallback: {} },
+];
+const MISSING_FILES = [];
+(function checkRequiredFiles() {
+    const exists = name => { try { new Function('return ' + name)(); return true; } catch (e) { return false; } };
+    REQUIRED_FILES.forEach(r => {
+        if (exists(r.name)) return;
+        if (!MISSING_FILES.includes(r.file)) MISSING_FILES.push(r.file);
+        if ('fallback' in r) window[r.name] = r.fallback;
+    });
+    if (!getComputedStyle(document.documentElement).getPropertyValue('--paper').trim()) MISSING_FILES.push('css/style.css');
+
+    const box = document.getElementById('data-warning');
+    if (!box || MISSING_FILES.length === 0) return;
+    const title = document.createElement('strong');
+    title.textContent = 'Auf dem Server fehlen Dateien';
+    const list = document.createElement('ul');
+    MISSING_FILES.forEach(f => { const li = document.createElement('li'); const c = document.createElement('code'); c.textContent = f; li.appendChild(c); list.appendChild(li); });
+    const hint = document.createElement('p');
+    hint.textContent = 'Lade sie mit genau diesem Ordner und Dateinamen ins Repository hoch und öffne die Seite danach neu. Die betroffenen Bereiche bleiben bis dahin leer.';
+    box.append(title, list, hint);
+    box.hidden = false;
+})();
+
+// Ein Fehler in einem Bereich darf Menü und andere Bereiche nicht blockieren
+function safe(fn) { try { return fn(); } catch (e) { console.error(e); } }
+
 // ============================================================
 // DATEN
 // ============================================================
@@ -653,6 +693,15 @@ class FlashDeck {
     }
     ids() { return this.pool().map(c => String(c.id)); }
 
+    // Überblick für die Startseite: Zähler über ALLE Karten des Decks (unabhängig vom Filter)
+    overview() {
+        const now = Date.now();
+        const ids = this.cards.map(c => String(c.id));
+        const c = SRS.counts(this.store, ids, now);
+        const left = Math.max(0, this.prefs.newLimit - this.introducedToday());
+        return { due: c.due, learning: c.learning, known: c.mature, unseen: c.new, newAvail: Math.min(left, c.new) };
+    }
+
     // ── Aufbau der Oberfläche ────────────────────────────────
     build() {
         const rating = RATING_LABELS.map((label, i) =>
@@ -1008,6 +1057,11 @@ function areaOfModule(name) {
     return AREAS.find(a => a.modules.some(m => m.id === name)) || AREAS[0];
 }
 
+// Anzeige-Reihenfolge: neueste Blöcke zuerst (AREAS ist von alt → neu angelegt)
+function areasNewestFirst() {
+    return AREAS.slice().reverse();
+}
+
 function loadNav() {
     try { navMemory = JSON.parse(safeStorage.getItem(NAV_KEY) || '{}') || {}; } catch (e) { navMemory = {}; }
 }
@@ -1016,17 +1070,26 @@ function saveNav() {
 }
 
 function renderNav() {
+    const onHome = currentModule === 'home';
     const areaTabs = document.getElementById('area-tabs');
     areaTabs.innerHTML = '';
-    AREAS.forEach(a => {
+
+    const startBtn = document.createElement('button');
+    startBtn.className = 'area-tab' + (onHome ? ' active' : '');
+    startBtn.textContent = 'Start';
+    startBtn.addEventListener('click', goHome);
+    areaTabs.appendChild(startBtn);
+
+    areasNewestFirst().forEach(a => {
         const b = document.createElement('button');
-        b.className = 'area-tab' + (a.id === currentArea.id ? ' active' : '');
+        b.className = 'area-tab' + (!onHome && a.id === currentArea.id ? ' active' : '');
         b.textContent = a.label;
         b.addEventListener('click', () => switchArea(a.id));
         areaTabs.appendChild(b);
     });
     const modTabs = document.getElementById('module-tabs');
     modTabs.innerHTML = '';
+    if (onHome) return;
     currentArea.modules.forEach(m => {
         const b = document.createElement('button');
         b.className = 'nav-tab' + (m.id === currentModule ? ' active' : '');
@@ -1054,10 +1117,118 @@ function switchModule(name) {
     document.querySelectorAll('.module').forEach(m => {
         m.classList.toggle('active', m.id === name + '-module');
     });
-    if (name === 'wortfluessigkeit' && !currentWordData) generateNewWord();
-    if (name === 'zahlenfolgen' && !zfCurrent) generateNewZahlenfolge();
-    if (name === 'wissen' && !wissenCurrent) generateNewWissenFrage();
-    if (decks[name]) decks[name].activate();
+    if (name === 'wortfluessigkeit' && !currentWordData) safe(generateNewWord);
+    if (name === 'zahlenfolgen' && !zfCurrent) safe(generateNewZahlenfolge);
+    if (name === 'wissen' && !wissenCurrent) safe(generateNewWissenFrage);
+    if (decks[name]) safe(() => decks[name].activate());
+    window.scrollTo(0, 0);
+}
+
+// ============================================================
+// STARTSEITE (Home)
+// ============================================================
+function goHome() {
+    currentModule = 'home';
+    navMemory.area = 'home';
+    saveNav();
+    document.querySelectorAll('.module').forEach(m => m.classList.toggle('active', m.id === 'home-module'));
+    renderNav();
+    renderHome();
+    window.scrollTo(0, 0);
+}
+
+// Status einer Kategorie für die Startseite
+function moduleStatus(id) {
+    if (id === 'wissen') {
+        const { due, unseen } = srsCounts();
+        if (due > 0)   return { due, tone: 'due',  label: due + ' fällig' };
+        if (unseen > 0) return { due: 0, tone: 'new', label: 'neue Fragen' };
+        return { due: 0, tone: 'done', label: 'erledigt' };
+    }
+    if (decks[id]) {
+        const o = decks[id].overview();
+        if (o.due > 0)      return { due: o.due, tone: 'due',  label: o.due + ' fällig' };
+        if (o.newAvail > 0) return { due: 0, tone: 'new', label: o.newAvail + ' neu' };
+        if (o.unseen > 0)   return { due: 0, tone: 'new', label: 'neue Karten' };
+        return { due: 0, tone: 'done', label: 'erledigt' };
+    }
+    return { due: 0, tone: 'practice', label: 'Übung' };
+}
+
+// Deck/Fach mit den meisten fälligen Karten – Ziel für „Jetzt wiederholen“
+function bestDueTarget() {
+    let best = null;
+    const consider = (id, due) => { if (due > 0 && (!best || due > best.due)) best = { id, due }; };
+    consider('wissen', srsCounts().due);
+    Object.keys(decks).forEach(id => consider(id, decks[id].overview().due));
+    return best;
+}
+
+function startDue(id) {
+    switchModule(id);
+    if (id === 'wissen') safe(srsStartDueSession);
+    else if (decks[id]) safe(() => decks[id].begin('learn'));
+}
+
+function renderHome() {
+    const el = document.getElementById('home-module');
+    if (!el) return;
+
+    // Aggregat: fällig & neu verfügbar über alle Lern-Decks
+    let totalDue = 0, totalNew = 0;
+    const w = srsCounts();
+    totalDue += w.due;
+    Object.keys(decks).forEach(id => { const o = decks[id].overview(); totalDue += o.due; totalNew += o.newAvail; });
+
+    const target = bestDueTarget();
+    const dueWord = totalDue === 1 ? 'fällige Wiederholung' : 'fällige Wiederholungen';
+    let action, sub;
+    if (totalDue > 0) {
+        action = `<button class="btn btn-primary home-go" data-go="${target.id}">Jetzt wiederholen</button>`;
+        sub = totalNew > 0 ? `Dazu ${totalNew} neue Karte${totalNew !== 1 ? 'n' : ''} verfügbar.` : 'Danach ist für heute alles wiederholt.';
+    } else if (totalNew > 0) {
+        action = `<button class="btn btn-primary home-go" data-go="${firstNewTarget()}">Neue Karten lernen</button>`;
+        sub = `${totalNew} neue Karte${totalNew !== 1 ? 'n' : ''} warten auf dich.`;
+    } else {
+        action = '';
+        sub = 'Nichts fällig. Du kannst jederzeit frei üben.';
+    }
+
+    const areasHtml = areasNewestFirst().map(a => {
+        const rows = a.modules.map(m => {
+            const s = moduleStatus(m.id);
+            return `<button class="home-row" data-module="${m.id}">
+                        <span class="home-row-name">${m.label}</span>
+                        <span class="home-pill home-pill--${s.tone}">${s.label}</span>
+                    </button>`;
+        }).join('');
+        return `<section class="home-area">
+                    <h2 class="home-area-title">${a.label}</h2>
+                    <div class="home-rows">${rows}</div>
+                </section>`;
+    }).join('');
+
+    el.innerHTML = `
+        <section class="home-hero">
+            <div class="home-today">
+                <p class="home-today-label">Heute</p>
+                <p class="home-today-num${totalDue === 0 ? ' is-zero' : ''}">${totalDue}</p>
+                <p class="home-today-cap">${dueWord}</p>
+                ${action}
+                <p class="home-today-sub">${sub}</p>
+            </div>
+        </section>
+        <div class="home-areas">${areasHtml}</div>
+    `;
+
+    const go = el.querySelector('.home-go');
+    if (go) go.addEventListener('click', () => startDue(go.dataset.go));
+    el.querySelectorAll('.home-row').forEach(r => r.addEventListener('click', () => switchModule(r.dataset.module)));
+}
+
+function firstNewTarget() {
+    const d = Object.keys(decks).find(id => decks[id].overview().newAvail > 0);
+    return d || Object.keys(decks)[0] || 'wissen';
 }
 
 // ============================================================
@@ -1131,24 +1302,27 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Erste Aufgaben generieren
-    wissenMigrateV2();
-    generateNewWord();
-    generateNewZahlenfolge();
-    generateNewWissenFrage();
-    updateStats();
-    updateZfStats();
-    updateWissenStats();
-    srsUpdateDisplay();
+    // Erste Aufgaben generieren (jeder Schritt einzeln abgesichert)
+    safe(wissenMigrateV2);
+    safe(generateNewWord);
+    safe(generateNewZahlenfolge);
+    safe(generateNewWissenFrage);
+    safe(updateStats);
+    safe(updateZfStats);
+    safe(updateWissenStats);
+    safe(srsUpdateDisplay);
 
     // Flashcard-Decks aufbauen
-    DECK_CONFIGS.forEach(cfg => { decks[cfg.moduleId] = new FlashDeck(cfg); });
+    DECK_CONFIGS.forEach(cfg => { safe(() => { decks[cfg.moduleId] = new FlashDeck(cfg); }); });
 
-    // Navigation: zuletzt geöffneten Bereich/Tab wiederherstellen (beim ersten Start: neuester Bereich)
+    // Titel führt zur Startseite zurück
+    const home = document.getElementById('home-link');
+    if (home) home.addEventListener('click', goHome);
+
+    // Standard-Einstieg: Startseite
     loadNav();
-    const startArea = AREAS.find(a => a.id === navMemory.area) || AREAS[AREAS.length - 1];
-    currentArea = startArea;
-    switchArea(startArea.id);
+    currentArea = AREAS[AREAS.length - 1];
+    goHome();
 });
 
 // Service Worker (Offline-Cache)
