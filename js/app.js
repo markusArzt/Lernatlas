@@ -13,6 +13,8 @@ const REQUIRED_FILES = [
     { name: 'flashcardsData',         file: 'data/aufnahmetest/flashcards.js',       fallback: [] },
     { name: 'block2KnochenCards',     file: 'data/block2/knochen.js',                fallback: [] },
     { name: 'block2KnochenDirLabels', file: 'data/block2/knochen.js',                fallback: {} },
+    { name: 'caPhosScenarios',        file: 'data/block2/calcium_phosphat.js',       fallback: [] },
+    { name: 'CaPhos',                 file: 'js/ca_phosphat.js' },
 ];
 const MISSING_FILES = [];
 (function checkRequiredFiles() {
@@ -1064,6 +1066,7 @@ const AREAS = [
         { id: 'flashcards',       label: 'Flashcards' },
     ] },
     { id: 'block2', label: 'Block 2', modules: [
+        { id: 'b2calcium', label: 'Calcium- & Phosphathaushalt' },
         { id: 'b2knochen', label: 'Knochen- und Bandpraktikum' },
     ] },
 ];
