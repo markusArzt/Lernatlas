@@ -836,3 +836,86 @@ button { cursor: pointer; }
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* ── Calcium- & Phosphathaushalt (js/ca_phosphat.js) ─────────────── */
+.cp { --cp-down: var(--artery); --cp-flat: var(--lymph); --cp-up: var(--nerve); --cp-info: var(--blue); display: grid; gap: 1rem; }
+.cp h3 { margin: 0 0 0.6rem; font-family: var(--serif); font-size: 1.2rem; }
+.cp h4 { margin: 1rem 0 0.4rem; font-size: 0.95rem; }
+.cp-panel, .cp-organ { background: var(--plate); border: 1px solid var(--rule); border-radius: var(--radius); padding: 1rem; }
+.cp-panel-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; }
+.cp-panel-head h3 { margin: 0; }
+.cp-live { position: sticky; top: 0; z-index: 5; display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; justify-content: space-between;
+    padding: 0.5rem 0.8rem; background: var(--plate); border: 1px solid var(--rule-strong); border-radius: var(--radius); font-size: 0.9rem; }
+.cp-live-item b { font-size: 1.1rem; }
+.cp-live-item.cp-up b, .cp-tile.cp-up .cp-tile-arrow, .cp-t-up { color: var(--cp-up); }
+.cp-live-item.cp-down b, .cp-tile.cp-down .cp-tile-arrow, .cp-t-down { color: var(--cp-down); }
+.cp-live-item.cp-flat b, .cp-tile.cp-flat .cp-tile-arrow, .cp-t-flat { color: var(--cp-flat); }
+
+.cp-ctls { display: grid; gap: 0.8rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+.cp-ctl { border: 0; padding: 0; margin: 0; min-width: 0; }
+.cp-ctl legend { font-weight: 650; font-size: 0.9rem; padding: 0; margin-bottom: 0.3rem; }
+.cp-ctl-hint { font-weight: 400; color: var(--ink-2); font-size: 0.8rem; }
+.cp-segs { display: flex; border: 1px solid var(--rule-strong); border-radius: var(--radius); overflow: hidden; }
+.cp-seg { flex: 1; position: relative; }
+.cp-seg + .cp-seg { border-left: 1px solid var(--rule-strong); }
+.cp-seg input { position: absolute; opacity: 0; inset: 0; cursor: pointer; margin: 0; }
+.cp-seg span { display: block; text-align: center; padding: 0.6rem 0.3rem; min-height: 2.75rem; font-size: 0.88rem; color: var(--ink-2); }
+.cp-seg input:checked + span { color: #fff; font-weight: 650; }
+.cp-seg.cp-down input:checked + span { background: var(--cp-down); }
+.cp-seg.cp-flat input:checked + span { background: var(--cp-flat); }
+.cp-seg.cp-up input:checked + span { background: var(--cp-up); }
+.cp-seg.cp-info input:checked + span { background: var(--cp-info); }
+.cp-seg input:focus-visible + span { outline: 3px solid var(--blue); outline-offset: -3px; }
+.cp-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.9rem; }
+
+.cp-tiles { display: grid; gap: 0.6rem; grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr)); }
+.cp-tile { display: grid; gap: 0.1rem; padding: 0.7rem; border: 1px solid var(--rule); border-left-width: 4px; border-radius: var(--radius); }
+.cp-tile.cp-up { border-left-color: var(--cp-up); } .cp-tile.cp-down { border-left-color: var(--cp-down); } .cp-tile.cp-flat { border-left-color: var(--cp-flat); }
+.cp-tile-arrow { font-size: 1.8rem; font-weight: 700; line-height: 1; }
+.cp-tile-label { font-weight: 650; font-size: 0.9rem; }
+.cp-tile-word { font-family: var(--serif); font-size: 1.05rem; }
+.cp-tile-note { font-size: 0.78rem; color: var(--ink-2); }
+
+.cp-diagram { max-width: 28rem; margin: 0 auto; }
+.cp-svg { width: 100%; height: auto; font-family: var(--sans); }
+.cp-svg-blood { fill: var(--tint-bad); stroke: var(--artery); stroke-width: 1; }
+.cp-svg-organ { fill: var(--tint-blue); stroke: var(--rule-strong); }
+.cp-svg-title, .cp-svg-organ-t { fill: var(--ink); font-size: 14px; font-weight: 650; }
+.cp-svg-val { font-size: 17px; font-weight: 700; fill: currentColor; }
+.cp-svg-lbl, .cp-svg-small { fill: var(--ink-2); font-size: 11px; }
+.cp-svg-small { font-size: 13px; }
+.cp-ar { stroke: currentColor; } .cp-arh { fill: currentColor; }
+.cp-ar-up, .cp-arh-up { color: var(--cp-up); } .cp-ar-down, .cp-arh-down { color: var(--cp-down); }
+.cp-ar0 { stroke: var(--rule-strong); stroke-width: 2; stroke-dasharray: 3 4; }
+.cp-caption { font-size: 0.82rem; color: var(--ink-2); margin: 0.4rem 0; }
+.cp-analysis { list-style: none; padding: 0; margin: 0.6rem 0 0; display: grid; gap: 0.4rem; }
+.cp-an { padding: 0.5rem 0.7rem; border-left: 4px solid var(--blue); background: var(--tint-blue); font-size: 0.9rem; border-radius: var(--radius); }
+.cp-an-ok { border-color: var(--lymph); background: var(--tint-ok); }
+.cp-an-warn { border-color: var(--artery); background: var(--tint-bad); }
+
+.cp-organs { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); align-items: start; }
+.cp-row { padding: 0.5rem 0; border-top: 1px solid var(--rule); }
+.cp-row:first-child { border-top: 0; }
+.cp-row-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.3rem; align-items: center; }
+.cp-row-name { font-weight: 650; font-size: 0.9rem; }
+.cp-row-text { margin: 0.25rem 0 0; font-size: 0.85rem; color: var(--ink-2); }
+.cp-chip { font-size: 0.78rem; font-weight: 650; padding: 0.1rem 0.5rem; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap; }
+.cp-chip.cp-down { color: var(--cp-down); } .cp-chip.cp-flat { color: var(--cp-flat); } .cp-chip.cp-up { color: var(--cp-up); }
+.cp-tip { margin: 0.6rem 0 0; padding: 0.45rem 0.7rem; border-left: 4px solid var(--cp-info); background: var(--tint-blue); font-size: 0.85rem; font-style: italic; border-radius: var(--radius); }
+
+.cp-vignette { font-family: var(--serif); font-size: 1.05rem; }
+.cp-check { list-style: none; padding: 0; margin: 0.6rem 0; display: grid; gap: 0.25rem; font-size: 0.88rem; }
+.cp-check li { padding: 0.25rem 0.6rem; border-left: 4px solid var(--rule-strong); }
+.cp-check .ok { border-color: var(--lymph); background: var(--tint-ok); } .cp-check .ok::before { content: '✓ '; }
+.cp-check .bad { border-color: var(--artery); background: var(--tint-bad); } .cp-check .bad::before { content: '✗ '; }
+.cp-check .skip { color: var(--ink-2); }
+.cp-labs { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 0.4rem; margin: 0; }
+.cp-labs div { padding: 0.35rem 0.6rem; border: 1px solid var(--rule); border-radius: var(--radius); }
+.cp-labs dt { font-size: 0.78rem; color: var(--ink-2); } .cp-labs dd { margin: 0; font-weight: 650; }
+.cp-q-opts { display: grid; gap: 0.4rem; }
+.cp-opt { text-align: left; padding: 0.6rem 0.8rem; min-height: 2.75rem; border: 1px solid var(--rule-strong); border-radius: var(--radius); background: var(--plate); color: var(--ink); font: inherit; cursor: pointer; }
+.cp-opt:hover:not(:disabled) { background: var(--tint-blue); }
+.cp-opt.is-correct { border-color: var(--lymph); background: var(--tint-ok); }
+.cp-opt.is-wrong { border-color: var(--artery); background: var(--tint-bad); }
+.cp-q-why { font-size: 0.88rem; margin: 0.4rem 0 0; } .cp-q-why.ok { color: var(--lymph); } .cp-q-why.bad { color: var(--artery); }
+@media (max-width: 520px) { .cp-panel, .cp-organ { padding: 0.8rem; } .cp-seg span { font-size: 0.82rem; } }
