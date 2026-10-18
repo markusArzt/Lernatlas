@@ -14,6 +14,7 @@ const REQUIRED_FILES = [
     { name: 'block2KnochenCards',     file: 'data/block2/knochen.js',                fallback: [] },
     { name: 'block2KnochenDirLabels', file: 'data/block2/knochen.js',                fallback: {} },
     { name: 'caPhosScenarios',        file: 'data/block2/calcium_phosphat.js',       fallback: [] },
+    { name: 'block2PodcastTopics',    file: 'data/block2/podcasts.js',               fallback: [] },
     { name: 'CaPhos',                 file: 'js/ca_phosphat.js' },
 ];
 const MISSING_FILES = [];
@@ -1383,6 +1384,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Flashcard-Decks aufbauen
     DECK_CONFIGS.forEach(cfg => { safe(() => { decks[cfg.moduleId] = new FlashDeck(cfg); }); });
+
+    // KI-Podcasts (Spotify-Links) unter dem Knochen-Deck
+    safe(() => {
+        const d = decks.b2knochen;
+        if (!d || !block2PodcastTopics.length) return;
+        const sec = document.createElement('section');
+        sec.className = 'pod';
+        const h = document.createElement('h3'); h.textContent = 'KI-Podcasts'; sec.appendChild(h);
+        const note = document.createElement('p'); note.className = 'pod-note';
+        note.textContent = 'Zum Hören in Spotify – benötigt Internet.'; sec.appendChild(note);
+        const grid = document.createElement('div'); grid.className = 'pod-grid';
+        block2PodcastTopics.forEach(t => {
+            const card = document.createElement('div'); card.className = 'pod-card';
+            const ct = document.createElement('div'); ct.className = 'pod-title'; ct.textContent = t.icon + ' ' + t.title;
+            card.appendChild(ct);
+            t.episodes.forEach(ep => {
+                if (ep.url) {
+                    const a = document.createElement('a'); a.className = 'pod-link'; a.href = ep.url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+                    a.textContent = '▶ ' + ep.title; card.appendChild(a);
+                } else {
+                    const sp = document.createElement('span'); sp.className = 'pod-link pod-soon'; sp.textContent = ep.title + ' – Link folgt'; card.appendChild(sp);
+                }
+            });
+            grid.appendChild(card);
+        });
+        sec.appendChild(grid);
+        d.root.appendChild(sec);
+    });
 
     // Titel führt zur Startseite zurück
     const home = document.getElementById('home-link');
