@@ -72,12 +72,10 @@
         const pills = el.querySelector('[data-ref=pills]');
         const body = el.querySelector('[data-ref=body]');
 
-        function podcasts(t) {
-            const eps = t.podcasts || [];
-            if (!eps.length) return '';
-            return '<div class="ph-pod"><span class="ph-pod-title">🎧 Spotify-Lernaufnahmen</span>' + eps.map(p => p.url
-                ? '<a class="pod-link" href="' + esc(p.url) + '" target="_blank" rel="noopener noreferrer">▶ ' + esc(p.title) + '</a>'
-                : '<span class="pod-link pod-soon">' + esc(p.title) + ' – Link folgt</span>').join('') + '</div>';
+        function podLink(it) {
+            return it.podcast
+                ? '<a class="ph-pod-link" href="' + esc(it.podcast) + '" target="_blank" rel="noopener noreferrer">🎧 Podcast anhören</a>'
+                : '<span class="ph-pod-link ph-pod-soon">🎧 Podcast: Link folgt</span>';
         }
 
         function render() {
@@ -88,10 +86,9 @@
             body.innerHTML =
                 '<div class="ph-head"><h3>' + esc(cur.title) + '</h3>' +
                 '<div class="ph-tools"><button class="btn btn-quiet" data-all="open">Alle aufklappen</button><button class="btn btn-quiet" data-all="close">Alle zuklappen</button>' + sim + '</div></div>' +
-                podcasts(cur) +
                 cur.items.map(it =>
                     '<details class="ph-item"><summary><span class="ph-nr">Frage ' + it.nr + ' · ' + esc(it.title) + '</span>' +
-                    '<span class="ph-q">' + inline(it.q) + '</span></summary>' +
+                    '<span class="ph-q">' + inline(it.q) + '</span>' + podLink(it) + '</summary>' +
                     '<div class="ph-a">' + renderMarkdown(it.a) + '</div></details>').join('');
         }
 
