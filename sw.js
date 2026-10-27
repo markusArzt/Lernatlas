@@ -1,6 +1,6 @@
 // Lernatlas – Service Worker (Offline-Cache)
 // WICHTIG: CACHE-Version hochzählen bei jedem Deployment mit Änderungen!
-const CACHE = 'medat-v20';
+const CACHE = 'medat-v21';
 
 const FILES = [
   './',
