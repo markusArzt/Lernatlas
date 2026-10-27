@@ -15,6 +15,8 @@ const REQUIRED_FILES = [
     { name: 'block2KnochenDirLabels', file: 'data/block2/knochen.js',                fallback: {} },
     { name: 'caPhosScenarios',        file: 'data/block2/calcium_phosphat.js',       fallback: [] },
     { name: 'block2PodcastTopics',    file: 'data/block2/podcasts.js',               fallback: [] },
+    { name: 'block2Physiologie',      file: 'data/block2/physiologie.js',            fallback: [] },
+    { name: 'Physio',                 file: 'js/physiologie.js' },
     { name: 'CaPhos',                 file: 'js/ca_phosphat.js' },
 ];
 const MISSING_FILES = [];
@@ -1067,6 +1069,7 @@ const AREAS = [
         { id: 'flashcards',       label: 'Flashcards' },
     ] },
     { id: 'block2', label: 'Block 2', modules: [
+        { id: 'b2physio', label: 'Physiologie' },
         { id: 'b2calcium', label: 'Calcium- & Phosphathaushalt' },
         { id: 'b2knochen', label: 'Knochen- und Bandpraktikum' },
     ] },
