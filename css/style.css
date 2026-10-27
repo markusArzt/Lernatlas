@@ -937,8 +937,9 @@ a.pod-link:hover { background: var(--tint-blue); }
 .ph-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.4rem 1rem; margin-bottom: 0.6rem; }
 .ph-head h3 { margin: 0; font-family: var(--serif); font-size: 1.4rem; }
 .ph-tools { display: flex; flex-wrap: wrap; gap: 0.3rem 0.8rem; align-items: center; }
-.ph-pod { display: grid; gap: 0.4rem; margin-bottom: 1rem; padding: 0.7rem; background: var(--plate); border: 1px solid var(--rule); border-left: 4px solid var(--blue); border-radius: var(--radius); }
-.ph-pod-title { font-weight: 650; font-size: 0.9rem; }
+.ph-pod-link { justify-self: start; display: inline-block; margin: 0.2rem 0; padding: 0.4rem 0.7rem; min-height: 2.5rem; line-height: 1.6; border: 1px solid var(--rule-strong); border-radius: var(--radius); color: var(--blue); font-size: 0.85rem; text-decoration: none; }
+a.ph-pod-link:hover { background: var(--tint-blue); }
+.ph-pod-soon { color: var(--ink-2); border-style: dashed; }
 .ph-item { background: var(--plate); border: 1px solid var(--rule); border-radius: var(--radius); margin-bottom: 0.6rem; }
 .ph-item[open] { border-color: var(--rule-strong); }
 .ph-item summary { list-style: none; cursor: pointer; padding: 0.8rem 1rem; display: grid; gap: 0.25rem; min-height: 2.75rem; }
