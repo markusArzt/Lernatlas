@@ -930,3 +930,30 @@ button { cursor: pointer; }
 .pod-link { display: block; padding: 0.55rem 0.7rem; min-height: 2.75rem; border: 1px solid var(--rule-strong); border-radius: var(--radius); color: var(--blue); text-decoration: none; font-size: 0.9rem; }
 a.pod-link:hover { background: var(--tint-blue); }
 .pod-soon { color: var(--ink-2); border-style: dashed; }
+
+/* ── Physiologie (js/physiologie.js) ── */
+.ph-pills { margin-bottom: 1rem; }
+.ph-count { font-size: 0.75rem; opacity: 0.7; margin-left: 0.2rem; }
+.ph-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.4rem 1rem; margin-bottom: 0.6rem; }
+.ph-head h3 { margin: 0; font-family: var(--serif); font-size: 1.4rem; }
+.ph-tools { display: flex; flex-wrap: wrap; gap: 0.3rem 0.8rem; align-items: center; }
+.ph-pod { display: grid; gap: 0.4rem; margin-bottom: 1rem; padding: 0.7rem; background: var(--plate); border: 1px solid var(--rule); border-left: 4px solid var(--blue); border-radius: var(--radius); }
+.ph-pod-title { font-weight: 650; font-size: 0.9rem; }
+.ph-item { background: var(--plate); border: 1px solid var(--rule); border-radius: var(--radius); margin-bottom: 0.6rem; }
+.ph-item[open] { border-color: var(--rule-strong); }
+.ph-item summary { list-style: none; cursor: pointer; padding: 0.8rem 1rem; display: grid; gap: 0.25rem; min-height: 2.75rem; }
+.ph-item summary::-webkit-details-marker { display: none; }
+.ph-item summary::after { content: '▾ Antwort anzeigen'; font-size: 0.8rem; color: var(--blue); font-weight: 650; }
+.ph-item[open] summary::after { content: '▴ Antwort ausblenden'; }
+.ph-item summary:focus-visible { outline: 3px solid var(--blue); outline-offset: -3px; }
+.ph-nr { font-size: 0.78rem; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 650; }
+.ph-q { font-family: var(--serif); font-size: 1.1rem; line-height: 1.35; }
+.ph-a { padding: 0.2rem 1rem 1rem; border-top: 1px solid var(--rule); font-size: 0.95rem; }
+.ph-a p { margin: 0.7rem 0 0.3rem; }
+.ph-a ul, .ph-a ol { margin: 0.3rem 0; padding-left: 1.3rem; }
+.ph-a li { margin: 0.2rem 0; }
+.ph-a hr { border: 0; border-top: 1px solid var(--rule); margin: 0.8rem 0; }
+.ph-table-wrap { overflow-x: auto; margin: 0.6rem 0; }
+.ph-table { border-collapse: collapse; font-size: 0.85rem; min-width: 100%; }
+.ph-table th, .ph-table td { border: 1px solid var(--rule); padding: 0.35rem 0.6rem; text-align: left; vertical-align: top; }
+.ph-table th { background: var(--tint-blue); }
