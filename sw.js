@@ -1,6 +1,6 @@
 // Lernatlas – Service Worker (Offline-Cache)
 // WICHTIG: CACHE-Version hochzählen bei jedem Deployment mit Änderungen!
-const CACHE = 'medat-v19';
+const CACHE = 'medat-v20';
 
 const FILES = [
   './',
@@ -9,6 +9,7 @@ const FILES = [
   './js/srs.js',
   './js/app.js',
   './js/ca_phosphat.js',
+  './js/physiologie.js',
   './manifest.json',
   './assets/fonts/eb-garamond-latin-wght-normal.woff2',
   './assets/fonts/eb-garamond-latin-wght-italic.woff2',
@@ -20,6 +21,7 @@ const FILES = [
   './data/block2/knochen.js',
   './data/block2/calcium_phosphat.js',
   './data/block2/podcasts.js',
+  './data/block2/physiologie.js',
 ];
 
 // Install: jede Datei einzeln cachen. Fehlt eine auf dem Server, wird nur sie übersprungen –
