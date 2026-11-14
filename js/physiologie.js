@@ -78,6 +78,12 @@
                 : '<span class="ph-pod-link ph-pod-soon">🎧 Podcast: Link folgt</span>';
         }
 
+        function topicPod(t) {
+            return t.podcast
+                ? '<a class="ph-pod-link" href="' + esc(t.podcast) + '" target="_blank" rel="noopener noreferrer">🎧 Podcast zu ' + esc(t.title) + '</a>'
+                : '<span class="ph-pod-link ph-pod-soon">🎧 Podcast zum Thema: Link folgt</span>';
+        }
+
         function render() {
             pills.innerHTML = topics.map(t => '<button class="fc-pill' + (t === cur ? ' active' : '') + '" role="tab" aria-selected="' + (t === cur) + '" data-topic="' + t.id + '">' +
                 esc(t.title) + ' <span class="ph-count">' + t.items.length + '</span></button>').join('');
@@ -85,7 +91,7 @@
                 ? '<button class="btn ph-sim" data-sim>Interaktive Simulation öffnen</button>' : '';
             body.innerHTML =
                 '<div class="ph-head"><h3>' + esc(cur.title) + '</h3>' +
-                '<div class="ph-tools"><button class="btn btn-quiet" data-all="open">Alle aufklappen</button><button class="btn btn-quiet" data-all="close">Alle zuklappen</button>' + sim + '</div></div>' +
+                '<div class="ph-tools">' + topicPod(cur) + '<button class="btn btn-quiet" data-all="open">Alle aufklappen</button><button class="btn btn-quiet" data-all="close">Alle zuklappen</button>' + sim + '</div></div>' +
                 cur.items.map(it =>
                     '<details class="ph-item"><summary><span class="ph-nr">Frage ' + it.nr + ' · ' + esc(it.title) + '</span>' +
                     '<span class="ph-q">' + inline(it.q) + '</span>' + podLink(it) + '</summary>' +

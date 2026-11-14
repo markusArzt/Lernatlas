@@ -15,8 +15,13 @@ const REQUIRED_FILES = [
     { name: 'block2KnochenDirLabels', file: 'data/block2/knochen.js',                fallback: {} },
     { name: 'caPhosScenarios',        file: 'data/block2/calcium_phosphat.js',       fallback: [] },
     { name: 'block2PodcastTopics',    file: 'data/block2/podcasts.js',               fallback: [] },
+    { name: 'sip1aBlock1Cards',       file: 'data/sip1a/block1.js',                  fallback: [] },
+    { name: 'sip1aBlock2Cards',       file: 'data/sip1a/block2.js',                  fallback: [] },
+    { name: 'sip1aBlock3Cards',       file: 'data/sip1a/block3.js',                  fallback: [] },
     { name: 'block2Physiologie',      file: 'data/block2/physiologie.js',            fallback: [] },
     { name: 'Physio',                 file: 'js/physiologie.js' },
+    { name: 'block2Histologie',       file: 'data/block2/histologie.js',             fallback: [] },
+    { name: 'Histo',                  file: 'js/histologie.js' },
     { name: 'CaPhos',                 file: 'js/ca_phosphat.js' },
 ];
 const MISSING_FILES = [];
@@ -641,6 +646,21 @@ const RATINGS = [
 ];
 const NEW_LIMIT_OPTIONS = [5, 10, 20, 30, 50, 100];
 
+// Bild vergrößern (Tippen schließt)
+function openLightbox(src) {
+    const box = document.createElement('div');
+    box.className = 'lightbox';
+    const im = document.createElement('img');
+    im.src = src;
+    im.alt = 'Abbildung (vergrößert)';
+    box.appendChild(im);
+    const close = () => { box.remove(); document.removeEventListener('keydown', onKey, true); };
+    const onKey = e => { if (e.key === 'Escape') { e.stopPropagation(); close(); } };
+    box.addEventListener('click', close);
+    document.addEventListener('keydown', onKey, true);
+    document.body.appendChild(box);
+}
+
 class FlashDeck {
     constructor(cfg) {
         this.cfg = cfg;
@@ -731,6 +751,9 @@ class FlashDeck {
                     <div data-ref="front">
                         <p class="fc-label" data-ref="frontLabel">Frage</p>
                         <p class="fc-q" data-ref="q"></p>
+                        <div class="fc-imgs" data-ref="imgs"></div>
+                        <ol class="fc-opts" data-ref="opts" hidden></ol>
+                        <p class="fc-ai-note" data-ref="aiNote" hidden>✦ Antwortoptionen von Claude ergänzt – nicht Teil der Originalfrage, bitte kritisch prüfen.</p>
                     </div>
                     <div class="fc-back" data-ref="back" style="display:none;">
                         <p class="fc-label">Antwort</p>
@@ -918,8 +941,33 @@ class FlashDeck {
         r.q.textContent = card.q;
         r.q.classList.toggle('is-long', card.q.length > 60);
 
-        // Antwort: erste Zeile groß, weitere Zeilen (Genitiv, Beispiel …) als Zusatz
-        const [main, ...meta] = card.a.split('\n');
+        // Bilder (Altfragen): komprimierte Dateien unter cfg.imgDir, Tippen vergrößert
+        const imgNodes = (card.img || []).map(name => {
+            const im = document.createElement('img');
+            im.className = 'fc-img';
+            im.loading = 'lazy';
+            im.alt = 'Abbildung zur Frage';
+            im.src = (this.cfg.imgDir || '') + name;
+            im.addEventListener('click', e => { e.stopPropagation(); openLightbox(im.src); });
+            return im;
+        });
+        r.imgs.replaceChildren(...imgNodes);
+        // Antwortoptionen (bei Altfragen teils von Claude ergänzt, Kennzeichnung via card.ai)
+        const hasOpts = Array.isArray(card.opts) && card.opts.length > 0;
+        r.opts.hidden = !hasOpts;
+        r.opts.replaceChildren(...(hasOpts ? card.opts : []).map((t, i) => {
+            const li = document.createElement('li');
+            li.dataset.letter = String.fromCharCode(65 + i);
+            li.textContent = t;
+            return li;
+        }));
+        r.aiNote.hidden = !(hasOpts && card.ai);
+        r.opts.classList.remove('revealed');
+
+        // Antwort: erste Zeile groß, weitere Zeilen (Genitiv, Beispiel …) als Zusatz.
+        // Altfragen (answerPlain): ganze Antwort gleichwertig, Zeilenumbrüche bleiben erhalten.
+        const plain = !!this.cfg.answerPlain;
+        const [main, ...meta] = plain ? [card.a] : card.a.split('\n');
         const mainEl = document.createElement('div');
         mainEl.className = 'fc-a-main' + (main.length > 80 ? ' is-long' : '');
         mainEl.textContent = main;
@@ -930,6 +978,15 @@ class FlashDeck {
             metaEl.textContent = meta.join('\n');
             nodes.push(metaEl);
         }
+        [['Hinweis', card.hint], ['Erklärung', card.expl], ['Hinweis', card.warn], ['Prüfungen', card.exam]].forEach(([label, text]) => {
+            if (!text) return;
+            const n = document.createElement('div');
+            n.className = 'fc-a-note' + (label === 'Prüfungen' ? ' is-exam' : '');
+            const l = document.createElement('span'); l.className = 'fc-a-note-label'; l.textContent = label;
+            const t = document.createElement('span'); t.textContent = text;
+            n.append(l, t);
+            nodes.push(n);
+        });
         r.a.replaceChildren(...nodes);
 
         const colors = this.cfg.topicColors || {};
@@ -974,9 +1031,12 @@ class FlashDeck {
         const r = this.ref;
         this.flipped = true;
         r.card.classList.add('flipped');
+        r.opts.classList.add('revealed');
         r.back.style.display = '';
         r.hint.style.display = 'none';
         r.rating.style.display = 'block';
+        const ok = this.current.ok || [];
+        r.opts.querySelectorAll('li').forEach((li, i) => li.classList.toggle('is-ok', ok.includes(i)));
         const id = String(this.current.id);
         r.rating.querySelectorAll('.fc-rate-btn').forEach(btn => {
             const p = this.session.preview(id, parseInt(btn.dataset.rating));
@@ -1054,24 +1114,50 @@ const DECK_CONFIGS = [
       defaultNewLimit: 20 },
     { moduleId: 'b2knochen', storageKey: 'medat_srs_b2_knochen_v1', cards: block2KnochenCards,
       dirLabels: block2KnochenDirLabels, defaultDir: 'la-de', defaultNewLimit: 20 },
+    // Altfragen SIP 1a (je Block ein Deck; Bilder komprimiert unter assets/sip1a/)
+    { moduleId: 'sip1a_b1', storageKey: 'medat_srs_sip1a_b1_v1', cards: sip1aBlock1Cards, imgDir: 'assets/sip1a/', answerPlain: true, defaultNewLimit: 20 },
+    { moduleId: 'sip1a_b2', storageKey: 'medat_srs_sip1a_b2_v1', cards: sip1aBlock2Cards, imgDir: 'assets/sip1a/', answerPlain: true, defaultNewLimit: 20 },
+    { moduleId: 'sip1a_b3', storageKey: 'medat_srs_sip1a_b3_v1', cards: sip1aBlock3Cards, imgDir: 'assets/sip1a/', answerPlain: true, defaultNewLimit: 20 },
 ];
 const decks = {};
 
 // ============================================================
-// NAVIGATION: Bereich (oben) → Kategorie (darunter)
-// Neuer Block = neuer Eintrag in AREAS.
+// NAVIGATION: Start · SIPs · Aufnahmetest (Gruppen)
+//   SIPs → SIP-Reiter (SIP 1a, 1b …) → Block-Reiter (Block 1, 2 …) → Kategorien
+//   Aufnahmetest → Kategorien
+// Neuer Block = neuer Eintrag in AREAS (group 'sips', sip, short). Block ohne Inhalt: modules mit soon:true.
 // ============================================================
+const GROUPS = [
+    { id: 'sips', label: 'SIPs' },
+    { id: 'aufnahmetest', label: 'Aufnahmetest' },
+];
+const SIPS = [
+    { id: 'sip1a', label: 'SIP 1a' },
+    { id: 'sip1b', label: 'SIP 1b' },
+];
+// Reihenfolge = Reihenfolge der Reiter. (Die Id 'block2' ist alt und bleibt, damit gespeicherte Einstellungen gelten.)
 const AREAS = [
-    { id: 'aufnahmetest', label: 'Aufnahmetest', modules: [
+    { id: 'aufnahmetest', group: 'aufnahmetest', label: 'Aufnahmetest', modules: [
         { id: 'wortfluessigkeit', label: 'Wortflüssigkeit' },
         { id: 'zahlenfolgen',     label: 'Zahlenfolgen' },
         { id: 'wissen',           label: 'Wissen' },
         { id: 'flashcards',       label: 'Flashcards' },
     ] },
-    { id: 'block2', label: 'Block 2', modules: [
+    { id: 'sip1a-b1', group: 'sips', sip: 'sip1a', short: 'Block 1', label: 'SIP 1a · Block 1', modules: [
+        { id: 'sip1a_b1', label: 'Altfragen' },
+    ] },
+    { id: 'block2', group: 'sips', sip: 'sip1a', short: 'Block 2', label: 'SIP 1a · Block 2', modules: [
+        { id: 'sip1a_b2', label: 'Altfragen' },
         { id: 'b2physio', label: 'Physiologie' },
+        { id: 'b2histo', label: 'Histologie' },
         { id: 'b2calcium', label: 'Calcium- & Phosphathaushalt' },
         { id: 'b2knochen', label: 'Knochen- und Bandpraktikum' },
+    ] },
+    { id: 'sip1a-b3', group: 'sips', sip: 'sip1a', short: 'Block 3', label: 'SIP 1a · Block 3', modules: [
+        { id: 'sip1a_b3', label: 'Altfragen' },
+    ] },
+    { id: 'sip1b', group: 'sips', sip: 'sip1b', label: 'SIP 1b', modules: [
+        { id: 'sip1b-soon', label: 'Inhalte folgen', soon: true },
     ] },
 ];
 const NAV_KEY = 'medat_nav_v1';
@@ -1081,10 +1167,17 @@ let navMemory = {};
 function areaOfModule(name) {
     return AREAS.find(a => a.modules.some(m => m.id === name)) || AREAS[0];
 }
+function moduleDef(id) {
+    for (const a of AREAS) { const m = a.modules.find(x => x.id === id); if (m) return m; }
+    return null;
+}
 
-// Anzeige-Reihenfolge: neueste Blöcke zuerst (AREAS ist von alt → neu angelegt)
-function areasNewestFirst() {
-    return AREAS.slice().reverse();
+// Startseite: neueste Blöcke zuerst, Blöcke ohne Inhalt ganz unten
+function homeAreas() {
+    const real = AREAS.filter(a => !a.modules.every(m => m.soon));
+    const soon = AREAS.filter(a => a.modules.every(m => m.soon));
+    const sips = real.filter(a => a.group === 'sips').reverse();
+    return [...sips, ...real.filter(a => a.group !== 'sips'), ...soon];
 }
 
 function loadNav() {
@@ -1096,33 +1189,51 @@ function saveNav() {
 
 function renderNav() {
     const onHome = currentModule === 'home';
+    const grp = onHome ? null : currentArea.group;
+    const mkTab = (cls, text, active, fn) => {
+        const b = document.createElement('button');
+        b.className = cls + (active ? ' active' : '');
+        b.textContent = text;
+        b.addEventListener('click', fn);
+        return b;
+    };
+
     const areaTabs = document.getElementById('area-tabs');
-    areaTabs.innerHTML = '';
+    areaTabs.replaceChildren(mkTab('area-tab', 'Start', onHome, goHome));
+    GROUPS.forEach(g => areaTabs.appendChild(mkTab('area-tab', g.label, grp === g.id, () => switchGroup(g.id))));
 
-    const startBtn = document.createElement('button');
-    startBtn.className = 'area-tab' + (onHome ? ' active' : '');
-    startBtn.textContent = 'Start';
-    startBtn.addEventListener('click', goHome);
-    areaTabs.appendChild(startBtn);
+    const sipTabs = document.getElementById('sip-tabs');
+    const blockTabs = document.getElementById('block-tabs');
+    sipTabs.replaceChildren();
+    blockTabs.replaceChildren();
+    if (grp === 'sips') {
+        SIPS.forEach(s => sipTabs.appendChild(mkTab('nav-tab sub-tab', s.label, currentArea.sip === s.id, () => switchSip(s.id))));
+        AREAS.filter(a => a.group === 'sips' && a.sip === currentArea.sip && a.short).forEach(a =>
+            blockTabs.appendChild(mkTab('nav-tab sub-tab', a.short, a.id === currentArea.id, () => switchArea(a.id))));
+    }
 
-    areasNewestFirst().forEach(a => {
-        const b = document.createElement('button');
-        b.className = 'area-tab' + (!onHome && a.id === currentArea.id ? ' active' : '');
-        b.textContent = a.label;
-        b.addEventListener('click', () => switchArea(a.id));
-        areaTabs.appendChild(b);
-    });
     const modTabs = document.getElementById('module-tabs');
-    modTabs.innerHTML = '';
+    modTabs.replaceChildren();
     if (onHome) return;
+    if (currentArea.modules.every(m => m.soon)) return;      // Block ohne Inhalt: nur der Hinweis
     currentArea.modules.forEach(m => {
-        const b = document.createElement('button');
-        b.className = 'nav-tab' + (m.id === currentModule ? ' active' : '');
+        const b = mkTab('nav-tab', m.label, m.id === currentModule, () => switchModule(m.id));
         b.dataset.module = m.id;
-        b.textContent = m.label;
-        b.addEventListener('click', () => switchModule(m.id));
         modTabs.appendChild(b);
     });
+}
+
+function switchGroup(groupId) {
+    if (groupId === 'aufnahmetest') { switchArea('aufnahmetest'); return; }
+    const remembered = AREAS.find(a => a.id === navMemory.sipsArea && a.group === 'sips');
+    const first = AREAS.find(a => a.group === 'sips' && a.sip === SIPS[0].id);
+    switchArea((remembered || first).id);
+}
+
+function switchSip(sipId) {
+    const remembered = AREAS.find(a => a.id === navMemory['sip:' + sipId] && a.sip === sipId);
+    const first = AREAS.find(a => a.group === 'sips' && a.sip === sipId);
+    if (remembered || first) switchArea((remembered || first).id);
 }
 
 function switchArea(areaId) {
@@ -1137,6 +1248,7 @@ function switchModule(name) {
     currentArea = areaOfModule(name);
     navMemory.area = currentArea.id;
     navMemory[currentArea.id] = name;
+    if (currentArea.group === 'sips') { navMemory.sipsArea = currentArea.id; navMemory['sip:' + currentArea.sip] = currentArea.id; }
     saveNav();
     renderNav();
     document.querySelectorAll('.module').forEach(m => {
@@ -1147,6 +1259,23 @@ function switchModule(name) {
     if (name === 'wissen' && !wissenCurrent) safe(generateNewWissenFrage);
     if (decks[name]) safe(() => decks[name].activate());
     window.scrollTo(0, 0);
+}
+
+// Blöcke ohne Inhalt: Hinweis-Seite
+function buildSoonModules() {
+    const host = document.querySelector('.game-container');
+    AREAS.forEach(a => a.modules.filter(m => m.soon).forEach(m => {
+        const div = document.createElement('div');
+        div.id = m.id + '-module';
+        div.className = 'module';
+        const sec = document.createElement('section');
+        sec.className = 'soon';
+        const h = document.createElement('h3'); h.textContent = a.label;
+        const p = document.createElement('p'); p.textContent = 'Inhalte folgen. Sobald es hier Material gibt, erscheint es an dieser Stelle.';
+        sec.append(h, p);
+        div.appendChild(sec);
+        host.appendChild(div);
+    }));
 }
 
 // ============================================================
@@ -1197,6 +1326,8 @@ function moduleStatus(id) {
         if (o.unseen > 0)   return { due: 0, tone: 'new', label: 'neue Karten' };
         return { due: 0, tone: 'done', label: 'erledigt' };
     }
+    const md = moduleDef(id);
+    if (md && md.soon) return { due: 0, tone: 'soon', label: 'folgt' };
     return { due: 0, tone: 'practice', label: 'Übung' };
 }
 
@@ -1245,17 +1376,17 @@ function renderHome() {
     const toggle = (on, attrs, title) =>
         `<button class="home-toggle" role="switch" aria-checked="${on}" title="${title}" ${attrs}><span class="home-toggle-track"></span></button>`;
 
-    const areasHtml = areasNewestFirst().map(a => {
+    const areasHtml = homeAreas().map(a => {
         const aOn = areaActive(a.id);
         const rows = a.modules.map(m => {
             const active = moduleActive(m.id);
-            const statusHtml = active
+            const statusHtml = (active || m.soon)
                 ? (() => { const s = moduleStatus(m.id); return `<span class="home-pill home-pill--${s.tone}">${s.label}</span>`; })()
                 : `<span class="home-pill home-pill--off">inaktiv</span>`;
-            const t = toggle(moduleFlag(m.id),
+            const t = m.soon ? '' : toggle(moduleFlag(m.id),
                 `data-toggle-module="${m.id}"${aOn ? '' : ' disabled'}`,
                 moduleFlag(m.id) ? 'Lektion pausieren' : 'Lektion aktivieren');
-            return `<div class="home-row${active ? '' : ' is-off'}">
+            return `<div class="home-row${active || m.soon ? '' : ' is-off'}">
                         <button class="home-row-main" data-module="${m.id}">
                             <span class="home-row-name">${m.label}</span>
                             ${statusHtml}
@@ -1423,7 +1554,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Standard-Einstieg: Startseite
     loadNav();
     loadActive();
-    currentArea = AREAS[AREAS.length - 1];
+    safe(buildSoonModules);
+    currentArea = AREAS[0];
     goHome();
 });
 
