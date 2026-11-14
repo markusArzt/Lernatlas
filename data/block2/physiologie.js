@@ -1,5 +1,6 @@
 // Lernatlas – Block 2 · Physiologie: Prüfungsfragen mit Musterantworten
 // Aufbau: Themenblock → Fragen (q) → ausklappbare Antwort (a, Markdown).
+// Podcast je Kategorie (z. B. Niere): `podcast` direkt unter `title` des Themenblocks.
 // Spotify-Lernaufnahme: pro Frage `podcast: 'https://open.spotify.com/…'` eintragen
 // (Spotify → Folge → Teilen → Link kopieren). Leer = „Podcast: Link folgt".
 // Neue Frage = neues Objekt in `items` (id stabil halten).
@@ -7,12 +8,13 @@ const block2Physiologie = [
  {
   "id": "neuro",
   "title": "Neurophysiologie",
+  "podcast": "https://open.spotify.com/episode/0ChEonDWmKpgrdZBq2ymXT?si=D1d6zBzjQaKCdZzIK1s-OQ",
   "items": [
    {
     "id": "phys-1",
     "nr": 1,
     "title": "Membranruhepotential",
-    "podcast": "https://open.spotify.com/episode/0mTINhHXwWEfWYLwryyA1z?si=6ee3dcf240d940ed",
+    "podcast": "",
     "q": "Was versteht man unter Membranruhepotential? Nennen Sie für das Membranpotential wesentliche Ionen mit Konzentration innerhalb und außerhalb der Zelle.",
     "a": "- **Definition:** Elektrische Potentialdifferenz über die Zellmembran einer *nicht erregten* Zelle; Innenseite negativ gegenüber außen.\n  - Neuron ca. **−70 mV** (−60 bis −80 mV), Skelettmuskel ca. **−90 mV**.\n- **Entstehung:**\n  1. **Ungleiche Ionenverteilung**, aufrechterhalten durch die **Na⁺/K⁺-ATPase** (3 Na⁺ hinaus, 2 K⁺ hinein, leicht elektrogen).\n  2. **Selektive Permeabilität**: In Ruhe vor allem K⁺-Leckkanäle offen → K⁺ diffundiert nach außen, negative Ladung (impermeable Proteinanionen) bleibt innen → Ruhepotential liegt nahe am **K⁺-Gleichgewichtspotential**.\n  3. Beschreibung durch **Nernst-Gleichung** (einzelnes Ion) bzw. **Goldman-Hodgkin-Katz-Gleichung** (mehrere Ionen, gewichtet nach Permeabilität).\n\n| Ion | intrazellulär (mmol/l) | extrazellulär (mmol/l) | Gleichgewichtspotential |\n|---|---|---|---|\n| K⁺ | ~140–155 | ~4–5 | ca. −90 mV |\n| Na⁺ | ~10–15 | ~145 | ca. +60 mV |\n| Cl⁻ | ~5–10 | ~110–120 | ca. −70 bis −90 mV |\n| Ca²⁺ (frei) | ~0,0001 (100 nmol/l) | ~1,2 (gesamt ~2,5) | ca. +120 mV |\n| HCO₃⁻ | ~10 | ~24 | – |\n| Proteinanionen | hoch | gering | membranimpermeabel |"
    },
@@ -52,7 +54,7 @@ const block2Physiologie = [
     "id": "phys-6",
     "nr": 6,
     "title": "Einteilung des Nervensystems",
-    "podcast": "https://open.spotify.com/episode/5MhmsmbKbHAnLywmJGDLwX?si=f256438107f24553",
+    "podcast": "",
     "q": "Nennen Sie systematische Einteilungsmöglichkeiten des Nervensystems. Wo befinden sich Somata von Nervenzellen?",
     "a": "- **Anatomisch (topographisch):**\n  - **ZNS:** Gehirn und Rückenmark\n  - **PNS:** Hirnnerven, Spinalnerven, periphere Nerven, Ganglien\n- **Funktionell:**\n  - **Somatisches Nervensystem** (willkürlich; Sensorik, Skelettmuskulatur)\n  - **Vegetatives (autonomes) Nervensystem:** Sympathikus, Parasympathikus, enterisches Nervensystem\n- **Nach Leitungsrichtung:** afferent (sensibel/sensorisch, zum ZNS) vs. efferent (motorisch, vom ZNS)\n- **Histologisch im ZNS:** graue Substanz (Somata) vs. weiße Substanz (myelinisierte Bahnen)\n- **Lage der Somata:**\n  - **ZNS:** graue Substanz – Großhirn- und Kleinhirnrinde, Kerngebiete (Basalganglien, Thalamus, Hirnstammkerne), Rückenmark (Vorder-, Hinter- und Seitenhorn)\n  - **PNS:** Ganglien\n    - **Spinalganglien** (pseudounipolare sensible Neurone) und sensible Hirnnervenganglien\n    - **Vegetative Ganglien:** sympathischer Grenzstrang (paravertebral), prävertebrale Ganglien, parasympathische Ganglien organnah/intramural\n    - Plexus des enterischen Nervensystems (Plexus myentericus und submucosus)\n  - Sonderfälle: Retina, Riechschleimhaut (Riechsinneszellen)"
    },
@@ -93,12 +95,13 @@ const block2Physiologie = [
  {
   "id": "muskel",
   "title": "Muskel / Motorik",
+  "podcast": "https://open.spotify.com/episode/152EX83dC3CijJk7rw08JS?si=lGT_VDT7QPqMW8sZZ0a-MA",
   "items": [
    {
     "id": "phys-11",
     "nr": 11,
     "title": "Neuromuskuläre Endplatte",
-    "podcast": "https://open.spotify.com/episode/5wlvmXjCHq7XLUmyB5viPr?si=fe24312298d7429f",
+    "podcast": "",
     "q": "Beschreiben Sie den Aufbau und die Funktionsweise einer „neuromuskulären Endplatte“. Welche Rolle spielt Acetylcholin bei der Auslösung einer Skelettmuskelkontraktion?",
     "a": "**Aufbau:**\n- **Präsynaptisch:** Endaufzweigung des Axons eines α-Motoneurons mit zahlreichen Vesikeln voll **Acetylcholin (ACh)** (je Vesikel = 1 Quant, ca. 5.000–10.000 Moleküle), aktive Zonen mit spannungsgesteuerten Ca²⁺-Kanälen.\n- **Synaptischer Spalt:** ca. 50 nm, enthält Basalmembran mit **Acetylcholinesterase (AChE)**.\n- **Postsynaptisch:** Muskelfasermembran mit **subneuralen Falten**; auf den Faltenkämmen dicht gepackte **nikotinerge ACh-Rezeptoren** (Typ N_M, Pentamer), in den Faltentälern spannungsgesteuerte Na⁺-Kanäle.\n\n**Ablauf / Rolle von ACh:**\n1. AP erreicht die Nervenendigung → Öffnung spannungsgesteuerter Ca²⁺-Kanäle → Ca²⁺-Einstrom.\n2. Exozytose von ACh (viele Quanten gleichzeitig).\n3. Je **2 ACh-Moleküle** binden an die α-Untereinheiten des nikotinergen Rezeptors → Öffnung des **unspezifischen Kationenkanals** (Na⁺-Einstrom > K⁺-Ausstrom).\n4. Entstehung des **Endplattenpotentials (EPP)** – normalerweise deutlich überschwellig (**Sicherheitsfaktor**) → 1:1-Übertragung (jedes Nerven-AP löst ein Muskel-AP aus).\n5. Muskel-AP breitet sich über das Sarkolemm und die **T-Tubuli** aus.\n6. **Elektromechanische Kopplung:** Dihydropyridinrezeptor (L-Typ-Ca²⁺-Kanal) im T-Tubulus ist mechanisch an den **Ryanodinrezeptor (RyR1)** des sarkoplasmatischen Retikulums gekoppelt → Ca²⁺-Freisetzung aus dem SR.\n7. Ca²⁺ bindet an **Troponin C** → Tropomyosin gibt Myosinbindungsstellen am Aktin frei → **Querbrückenzyklus** → Kontraktion.\n8. **Beendigung:** AChE spaltet ACh in Cholin und Acetat (in < 1 ms); Cholin wird präsynaptisch wieder aufgenommen. Ca²⁺ wird durch SERCA ins SR zurückgepumpt → Relaxation.\n\n- Klinischer Bezug: Curare (kompetitiver Rezeptorblocker), Succinylcholin (depolarisierender Blocker), Botulinumtoxin (hemmt ACh-Freisetzung), Myasthenia gravis (Antikörper gegen ACh-Rezeptoren), AChE-Hemmer (z. B. Neostigmin)."
    },
@@ -106,7 +109,7 @@ const block2Physiologie = [
     "id": "phys-12",
     "nr": 12,
     "title": "Glatte, Herz- und Skelettmuskulatur",
-    "podcast": "https://open.spotify.com/episode/1VP5NESbT0Aq4wWKzL2fDp?si=4d56988488754fe4",
+    "podcast": "",
     "q": "Nennen Sie die Unterschiede zwischen glatter, Herz- und Skelettmuskulatur hinsichtlich der Kontraktion.",
     "a": "| Merkmal | Skelettmuskel | Herzmuskel | Glatter Muskel |\n|---|---|---|---|\n| Struktur | quergestreift, vielkernige Fasern (Synzytium) | quergestreift, einkernig, verzweigt, Glanzstreifen | keine Querstreifung, spindelförmig, einkernig |\n| Elektrische Kopplung | keine (jede Faser eigene Endplatte) | Gap Junctions → **funktionelles Synzytium** | Single-Unit: Gap Junctions; Multi-Unit: kaum |\n| Auslösung | nur über Motoneuron (somatisch) | **autorhythmisch** (Schrittmacher), vegetativ moduliert | myogen (Schrittmacher, Dehnung), vegetativ, hormonell, lokal |\n| Ruhepotential | ~ −90 mV | ~ −90 mV (Arbeitsmyokard) | ~ −50 bis −60 mV, oft instabil (slow waves) |\n| AP-Dauer | 2–5 ms | 200–300 ms (Plateau) | variabel, teils Spike-/Plateau-APs |\n| Ca²⁺-Quelle | fast nur SR; DHPR–RyR1 **mechanisch gekoppelt** | extrazellulär + SR: **Ca²⁺-induzierte Ca²⁺-Freisetzung** (L-Typ → RyR2) | extrazellulär + SR (IP₃-Rezeptor) |\n| Ca²⁺-Angriffspunkt | Troponin C (aktinbasiert) | Troponin C | **Calmodulin → Myosin-leichte-Ketten-Kinase (MLCK)** → Phosphorylierung des Myosins (myosinbasiert) |\n| Tetanus | möglich | **nicht möglich** (lange Refraktärzeit) | tonische Dauerkontraktion möglich |\n| Kraftabstufung | Rekrutierung + Frequenz | Frank-Starling + Inotropie (Ca²⁺-Menge) | Ca²⁺-Konzentration, Ca²⁺-Sensitivität (Rho-Kinase/MLCP) |\n| Geschwindigkeit / Ökonomie | schnell | mittel | langsam, sehr ökonomisch (**Latch-Zustand**) |"
    },
@@ -114,7 +117,7 @@ const block2Physiologie = [
     "id": "phys-13",
     "nr": 13,
     "title": "Tetanische Kontraktion",
-    "podcast": "https://open.spotify.com/episode/1VP5NESbT0Aq4wWKzL2fDp?si=4d56988488754fe4",
+    "podcast": "",
     "q": "Was versteht man beim Skelettmuskel unter tetanischer Kontraktion und wie kommt es zu dieser?",
     "a": "- **Definition:** Dauerkontraktion durch Überlagerung (**Superposition**) von Einzelzuckungen bei hochfrequenter Erregung; die Kraft ist deutlich (ca. 2–4×) höher als bei einer Einzelzuckung.\n- **Voraussetzung:** Das Muskel-AP und seine Refraktärzeit (wenige ms) sind viel kürzer als die Einzelzuckung (ca. 50–100 ms) → neue Erregung schon während der laufenden Kontraktion möglich.\n- **Mechanismus:**\n  - Bei schneller AP-Folge wird Ca²⁺ wiederholt aus dem SR freigesetzt, bevor die SERCA es zurückpumpen kann → **zytosolisches Ca²⁺ bleibt erhöht**.\n  - Querbrückenzyklen laufen ununterbrochen; serienelastische Elemente bleiben gedehnt → Kraftaufbau summiert sich.\n- **Formen:**\n  - **Unvollständiger Tetanus:** Muskel relaxiert zwischen den Reizen teilweise → gezackte Kraftkurve.\n  - **Vollständiger Tetanus:** keine Relaxation mehr → glatte Kraftkurve (Plateau).\n- **Fusionsfrequenz** abhängig vom Fasertyp: langsame Typ-I-Fasern ca. 20–30 Hz, schnelle Typ-II-Fasern ca. 60–100 Hz.\n- Physiologisch sind Willkürkontraktionen tetanisch; die **asynchrone Aktivierung** verschiedener motorischer Einheiten sorgt für eine gleichmäßige Gesamtkraft.\n- Nicht verwechseln mit **Tetanie** (Krampf bei Hypokalzämie) oder der Krankheit **Tetanus** (Wundstarrkrampf)."
    },
@@ -122,7 +125,7 @@ const block2Physiologie = [
     "id": "phys-14",
     "nr": 14,
     "title": "Energiequellen und Energiespeicher der Skelettmuskulatur",
-    "podcast": "https://open.spotify.com/episode/10iEMBqOFv1QN2gPxQRawe?si=6da986218e1242f6",
+    "podcast": "",
     "q": "Welche Energiequellen und Energiespeicher benützt die Skelettmuskulatur?",
     "a": "- **Direkte Energiequelle: ATP** – benötigt für Querbrückenzyklus (Myosin-ATPase), Ca²⁺-Rückpumpen ins SR (SERCA) und Na⁺/K⁺-ATPase.\n- **Energiespeicher / Bereitstellung (nach Geschwindigkeit):**\n  1. **ATP-Vorrat:** sehr gering (~ 5 mmol/kg) → reicht nur für 1–2 s bzw. wenige Kontraktionen.\n  2. **Kreatinphosphat** (~ 15–25 mmol/kg): Kreatinkinase (Lohmann-Reaktion) regeneriert ATP sofort → ca. 6–10 s Maximalleistung. Ergänzend Myokinase-Reaktion (2 ADP → ATP + AMP).\n  3. **Anaerobe Glykolyse** aus Muskelglykogen bzw. Glucose → Laktat; schnell, aber nur 2 ATP pro Glucose (3 aus Glykogen); dominiert bei intensiver Belastung von ~30 s bis 2 min; Laktatbildung → Azidose.\n  4. **Aerobe (oxidative) Energiegewinnung** in den Mitochondrien (langsam, aber ergiebig, ~ 30–32 ATP pro Glucose):\n     - Kohlenhydrate (Muskelglykogen ~ 300–400 g, Blutglucose aus Leberglykogen)\n     - **Fettsäuren** (intramuskuläre Triglyceride, freie Fettsäuren aus dem Fettgewebe) – Hauptenergiequelle bei Ruhe und langer Ausdauerbelastung\n     - geringfügig Aminosäuren, Ketonkörper\n- **Myoglobin** dient als kleiner O₂-Speicher im Muskel.\n- Fasertypen: **Typ I** (langsam, oxidativ, viele Mitochondrien, Myoglobin, ermüdungsresistent) vs. **Typ II** (schnell, glykolytisch, ermüdbar).\n- Nach Belastung: **„Sauerstoffschuld“** (EPOC) zur Wiederauffüllung der Speicher und Laktatabbau."
    },
@@ -130,7 +133,7 @@ const block2Physiologie = [
     "id": "phys-15",
     "nr": 15,
     "title": "Muskelspindel und Spindelpause",
-    "podcast": "https://open.spotify.com/episode/5Z7W2Ge46nfyX3qp2jqUDf?si=eb47981c9d8b4e01",
+    "podcast": "",
     "q": "Beschreiben Sie Aufgabe und Innervation der Muskelspindel und erklären Sie das Phänomen der Spindelpause.",
     "a": "- **Aufgabe:** Dehnungsrezeptor; misst **Muskellänge** (statisch) und **Längenänderungsgeschwindigkeit** (dynamisch). Liegt **parallel** zu den extrafusalen Arbeitsfasern.\n- **Aufbau:** Bindegewebskapsel mit **intrafusalen Muskelfasern**: Kernsackfasern (dynamisch und statisch) und Kernkettenfasern; zentraler, nicht kontraktiler Rezeptorteil, kontraktile Polenden.\n- **Afferente Innervation:**\n  - **Ia-Fasern** (primäre, anulospirale Endigungen) an allen intrafusalen Fasern → dynamische und statische Antwort\n  - **II-Fasern** (sekundäre Endigungen) v. a. an Kernkettenfasern → überwiegend statische Antwort\n- **Efferente Innervation:**\n  - **γ-Motoneurone** (dynamisch und statisch) innervieren die kontraktilen Polenden → stellen die **Empfindlichkeit** der Spindel ein (Vordehnung des Rezeptorteils)\n  - teilweise β-Motoneurone (innervieren extra- und intrafusale Fasern)\n- **Zentrale Verschaltung:** Ia-Afferenz → **monosynaptischer Dehnungsreflex** (Eigenreflex, z. B. Patellarsehnenreflex) auf α-Motoneurone des gleichen Muskels; über Ia-Interneurone **reziproke Hemmung** des Antagonisten.\n- **Spindelpause:**\n  - Kontrahiert sich nur die extrafusale Muskulatur (z. B. bei elektrischer Reizung der α-Motoneurone oder einer reflektorischen Zuckung ohne γ-Aktivierung), **verkürzt** sich der Muskel.\n  - Da die Spindel **parallel** liegt, wird sie dabei **entlastet** → die Ia-Entladung **verstummt** während der Kontraktion (Pause im Ableitsignal).\n  - Beweist die Parallelschaltung (im Gegensatz zum in Serie liegenden Golgi-Sehnenorgan, das bei Kontraktion vermehrt feuert).\n  - Physiologisch wird die Spindelpause durch die **α-γ-Koaktivierung** verhindert → Spindel bleibt auch bei Verkürzung messbereit."
    },
@@ -138,7 +141,7 @@ const block2Physiologie = [
     "id": "phys-16",
     "nr": 16,
     "title": "Golgi-Sehnenorgan",
-    "podcast": "https://open.spotify.com/episode/2B0s1N18ccCWLhNNzvBERl?si=122bfc13ad504b3e",
+    "podcast": "",
     "q": "Nennen Sie Afferenz, zentrale Verschaltung und Funktion des Golgi-Sehnenorgans.",
     "a": "- **Lage:** Am Muskel-Sehnen-Übergang, **in Serie** zu den Muskelfasern.\n- **Afferenz:** **Ib-Fasern** (Aα, ca. 70–120 m/s).\n- **Adäquater Reiz:** **Muskelspannung (Kraft)** – v. a. aktive Kontraktion, weniger passive Dehnung.\n- **Zentrale Verschaltung (Rückenmark):**\n  - **Disynaptisch:** Ib-Afferenz → **hemmendes Interneuron** → α-Motoneuron des **eigenen (homonymen)** Muskels und seiner Synergisten (**autogene Hemmung**).\n  - Über **erregende Interneurone** Aktivierung der α-Motoneurone des **Antagonisten**.\n  - Ib-Interneurone erhalten konvergente Eingänge von Haut-, Gelenkafferenzen und absteigenden Bahnen.\n  - Weiterleitung zum Kleinhirn (Tractus spinocerebellaris) für die Motorik-Koordination.\n- **Funktion:**\n  - Rückmeldung und **Regelung der Muskelkraft** (negative Rückkopplung)\n  - Feinabstimmung der Muskelspannung bei Haltung und Bewegung\n  - **Schutz vor Überlastung** (klassisch: „Taschenmesserphänomen“)"
    },
@@ -146,7 +149,7 @@ const block2Physiologie = [
     "id": "phys-17",
     "nr": 17,
     "title": "Renshaw-System",
-    "podcast": "https://open.spotify.com/episode/2B0s1N18ccCWLhNNzvBERl?si=122bfc13ad504b3e",
+    "podcast": "",
     "q": "Erklären Sie Funktionsweise und Bedeutung des Renshaw-Systems.",
     "a": "- **Renshaw-Zellen:** Hemmende Interneurone im Vorderhorn des Rückenmarks.\n- **Funktionsweise (rekurrente Hemmung):**\n  1. Das α-Motoneuron gibt eine **Axonkollaterale** zur Renshaw-Zelle ab und erregt sie über **Acetylcholin** (nikotinerg).\n  2. Die Renshaw-Zelle **hemmt** über **Glycin** (teilweise GABA) dasselbe α-Motoneuron sowie benachbarte, synergistische Motoneurone → **negative Rückkopplung**.\n  3. Zusätzlich hemmt sie die **Ia-Interneurone** des Antagonisten → Enthemmung (Disinhibition) des Antagonisten.\n  4. Renshaw-Zellen werden selbst von absteigenden Bahnen moduliert.\n- **Bedeutung:**\n  - **Begrenzung und Stabilisierung der Entladungsfrequenz** der Motoneurone\n  - **Laterale Hemmung** → Kontrastverstärkung, Fokussierung der motorischen Aktivität auf die stark aktivierten Motoneurone\n  - Verhinderung übermäßiger Synchronisation, Beitrag zur Feinabstufung der Kraft\n- **Klinik:** **Tetanustoxin** hemmt die Glycin-Freisetzung, **Strychnin** blockiert Glycinrezeptoren → Wegfall der Hemmung → generalisierte Krämpfe."
    }
@@ -155,6 +158,7 @@ const block2Physiologie = [
  {
   "id": "niere",
   "title": "Niere",
+  "podcast": "https://open.spotify.com/episode/152EX83dC3CijJk7rw08JS?si=lGT_VDT7QPqMW8sZZ0a-MA",
   "items": [
    {
     "id": "phys-18",
@@ -176,7 +180,7 @@ const block2Physiologie = [
     "id": "phys-20",
     "nr": 20,
     "title": "Selektivität und Umfang der glomerulären Filtration",
-    "podcast": "https://open.spotify.com/episode/6rXWSGmkQaZBG9bE31w04i?si=8dde33bfe76243a7",
+    "podcast": "",
     "q": "Was trägt zur Selektivität und Umfang der glomerulären Filtration bei?",
     "a": "**Selektivität – glomerulärer Filter (3 Schichten):**\n1. **Gefenstertes Endothel** (Poren ~ 50–100 nm), negativ geladene Glykokalyx → hält Blutzellen zurück.\n2. **Glomeruläre Basalmembran** (Kollagen IV, Laminin, negativ geladene Proteoglykane wie Heparansulfat) → wichtigste Größen- und Ladungsbarriere.\n3. **Podozyten** mit Fußfortsätzen und **Schlitzmembran** (Nephrin, Podocin) → feinste Siebstruktur.\n\n**Filtrierbarkeit hängt ab von:**\n- **Molekülgröße:** frei filtriert bis Radius ~ 1,8 nm (~ < 10 kDa, z. B. Wasser, Elektrolyte, Glucose, Harnstoff, Inulin); nicht filtriert ab Radius ~ 4 nm (~ > 70 kDa).\n- **Ladung:** negative Teilchen werden schlechter filtriert als neutrale gleicher Größe (Albumin, 69 kDa, negativ geladen → praktisch nicht filtriert); positive besser.\n- **Form und Verformbarkeit** der Moleküle.\n- **Proteinbindung:** an Plasmaproteine gebundene Stoffe (z. B. ~ 40 % des Ca²⁺, viele Medikamente, Hormone) werden nicht filtriert.\n\n**Umfang (GFR) hängt ab von:**\n- **K_f**: Filtrationsfläche (~ 1,5 m² je Niere) und Wasserdurchlässigkeit; Zahl funktionsfähiger Nephrone (~ 1 Mio. pro Niere); Mesangiumkontraktion\n- **Effektiver Filtrationsdruck:** glomerulärer Kapillardruck (Tonus von Vas afferens/efferens), Druck in der Bowman-Kapsel, onkotischer Druck des Plasmas\n- **Renaler Plasmafluss**\n- Regulationsmechanismen wie in Frage 19 (Autoregulation, Sympathikus, Angiotensin II, ANP, Prostaglandine)"
    },
@@ -209,12 +213,13 @@ const block2Physiologie = [
  {
   "id": "lunge",
   "title": "Lunge",
+  "podcast": "https://open.spotify.com/episode/2xuhWaLD4XXRRRpxjMFZjh?si=5uQmIJfxSMqoZiH2KcVdMA",
   "items": [
    {
     "id": "phys-24",
     "nr": 24,
     "title": "Atemmechanik, statische Lungenvolumina, Obstruktion & Restriktion",
-    "podcast": "https://open.spotify.com/episode/0N9eb5CdswDNUOG3F4YmZT?si=0a4e7c8dcab8475b",
+    "podcast": "",
     "q": "Beschreiben Sie die Mechanik der ruhigen Ein- und Ausatmung, die beteiligten Muskeln, und die resultierenden Druckveränderungen in den Alveolen. Nennen Sie die statischen Lungenvolumina bzw. -kapazitäten (inkl. Richtgrößen) sowie die Auswirkungen von Obstruktion & Restriktion.",
     "a": "**Ruhige Inspiration (aktiv):**\n- **Zwerchfell** (N. phrenicus, C3–C5) kontrahiert und tritt tiefer (Hauptanteil, ~ 2/3 des Atemzugvolumens); **Mm. intercostales externi** (und Mm. scaleni) heben die Rippen.\n- Thoraxvolumen ↑ → **intrapleuraler Druck** sinkt von ca. −5 auf ca. −8 cmH₂O (≈ −0,5 auf −0,8 kPa).\n- Lunge folgt → **Alveolardruck wird negativ** (ca. −1 cmH₂O bzw. −0,1 kPa unter Atmosphärendruck) → Luft strömt ein; am Ende der Inspiration Alveolardruck = 0.\n\n**Ruhige Exspiration (passiv):**\n- Durch **elastische Rückstellkräfte** der Lunge (elastische Fasern, Oberflächenspannung) und des Thorax.\n- **Alveolardruck wird positiv** (ca. +1 cmH₂O) → Luft strömt aus; intrapleuraler Druck bleibt negativ (zurück auf ca. −5 cmH₂O).\n- Forcierte Exspiration: **Mm. intercostales interni**, Bauchmuskulatur. Atemhilfsmuskeln (Inspiration): Mm. scaleni, M. sternocleidomastoideus, Mm. pectorales.\n\n**Statische Lungenvolumina/-kapazitäten (Richtwerte junger Erwachsener, Mann):**\n\n| Größe | Richtwert |\n|---|---|\n| Atemzugvolumen (AZV, V_T) | ~ 0,5 l |\n| Inspiratorisches Reservevolumen (IRV) | ~ 2,5–3 l |\n| Exspiratorisches Reservevolumen (ERV) | ~ 1–1,5 l |\n| Residualvolumen (RV) | ~ 1,2–1,5 l |\n| Vitalkapazität (VK = IRV + AZV + ERV) | ~ 4,5–5 l |\n| Inspiratorische Kapazität (IK = AZV + IRV) | ~ 3–3,5 l |\n| Funktionelle Residualkapazität (FRC = ERV + RV) | ~ 2,5–3 l |\n| Totale Lungenkapazität (TLC = VK + RV) | ~ 6 l |\n\n- RV, FRC und TLC sind **nicht spirometrisch** messbar → Helium-Verdünnungsmethode oder Bodyplethysmographie.\n\n**Obstruktion** (z. B. Asthma, COPD, Emphysem): erhöhter Atemwegswiderstand, „air trapping“ → **RV ↑, FRC ↑, RV/TLC ↑**, TLC normal oder ↑ (Emphysem, Überblähung), VK ↓ (relativ).\n\n**Restriktion** (z. B. Lungenfibrose, Thoraxdeformität, Pleuraerguss, neuromuskuläre Erkrankungen): verminderte Dehnbarkeit/Ausdehnung → **TLC ↓, VK ↓, FRC ↓**, RV ↓ oder normal, Compliance ↓."
    },
@@ -222,6 +227,7 @@ const block2Physiologie = [
     "id": "phys-25",
     "nr": 25,
     "title": "Luftzusammensetzung und Partialdrücke",
+    "podcast": "",
     "q": "Nennen Sie die Zusammensetzung von Luft in Meeres- und Höhenlage. Definieren Sie den Begriff Partialdruck und nennen bzw. berechnen Sie die Partialdruck-Werte der Atemgase (O₂ und CO₂) in Umgebungsluft. Warum sind O₂- und CO₂-Partialdruck in den Alveolen unterschiedlich von der Umgebungsluft?",
     "a": "**Zusammensetzung trockener Luft:** N₂ ~ 78,1 %, **O₂ ~ 20,9 %**, Ar ~ 0,9 %, **CO₂ ~ 0,04 %**.\n- **In der Höhe sind die prozentualen Anteile gleich** – nur der **Gesamtluftdruck sinkt** (etwa Halbierung alle ~ 5.500 m) → Partialdrücke sinken.\n  - Meereshöhe: 760 mmHg (101,3 kPa); 3.000 m: ~ 525 mmHg; 5.500 m: ~ 380 mmHg; Mount Everest (8.848 m): ~ 250 mmHg.\n\n**Partialdruck (Dalton-Gesetz):** Der Druck, den ein Gas in einem Gasgemisch ausüben würde, wenn es allein das gesamte Volumen einnähme. **P_Gas = F_Gas × P_gesamt**; die Summe aller Partialdrücke ergibt den Gesamtdruck.\n\n**Berechnung Umgebungsluft (Meereshöhe, trocken):**\n- P_O₂ = 0,209 × 760 mmHg ≈ **159 mmHg (~ 21 kPa)**\n- P_CO₂ = 0,0004 × 760 mmHg ≈ **0,3 mmHg (~ 0,04 kPa)**\n- Inspirierte, wasserdampfgesättigte Luft (37 °C, P_H₂O = 47 mmHg): P_IO₂ = 0,209 × (760 − 47) ≈ **149 mmHg**\n- Beispiel 3.000 m: P_IO₂ ≈ 0,209 × (525 − 47) ≈ 100 mmHg\n\n**Alveolär:** **P_AO₂ ≈ 100 mmHg (13,3 kPa)**, **P_ACO₂ ≈ 40 mmHg (5,3 kPa)**\n\n**Gründe für den Unterschied:**\n1. **Wasserdampfsättigung** in den Atemwegen (47 mmHg) „verdünnt“ die übrigen Gase.\n2. **Kontinuierlicher Gasaustausch:** O₂ wird ständig ins Blut aufgenommen, CO₂ ständig aus dem Blut abgegeben.\n3. **Mischung mit der FRC:** Pro Atemzug gelangen nur ~ 350 ml Frischluft (500 ml − 150 ml Totraum) in die Alveolen und mischen sich mit ~ 2,5–3 l Luft der FRC → nur ca. 1/7 Erneuerung pro Atemzug, die Alveolarluft bleibt relativ konstant.\n4. Rückatmung von Totraumluft (alveoläre Gasmischung) zu Beginn jeder Inspiration.\n- **Alveoläre Gasgleichung:** P_AO₂ ≈ P_IO₂ − P_ACO₂ / RQ ≈ 149 − 40/0,8 ≈ 100 mmHg.\n- Die alveolären Partialdrücke hängen vom Verhältnis **alveoläre Ventilation zu O₂-Verbrauch bzw. CO₂-Produktion** ab."
    },
@@ -229,7 +235,7 @@ const block2Physiologie = [
     "id": "phys-26",
     "nr": 26,
     "title": "Dynamische Lungenvolumina und Atemwegswiderstand",
-    "podcast": "https://open.spotify.com/episode/0N9eb5CdswDNUOG3F4YmZT?si=0a4e7c8dcab8475b",
+    "podcast": "",
     "q": "Nennen und erklären Sie die dynamischen Lungenvolumina bzw. -kapazitäten (inkl. Richtgrößen) sowie die Auswirkungen von Lungenerkrankungen. Wovon hängt der Atemwegswiderstand ab und welche anatomischen Strukturen bestimmen ihn?",
     "a": "**Dynamische Größen (zeitbezogen, Richtwerte junger Erwachsener):**\n\n| Größe | Erklärung | Richtwert |\n|---|---|---|\n| **FEV₁** (Einsekundenkapazität) | Volumen, das nach maximaler Inspiration in der 1. Sekunde forciert ausgeatmet wird | ~ 3,5–4,5 l |\n| **FVC** (forcierte Vitalkapazität) | maximal forciert ausgeatmetes Volumen | ~ 4,5–5 l |\n| **Tiffeneau-Index** (FEV₁/VK bzw. FEV₁/FVC) | relative Einsekundenkapazität | > 70–75 % (ca. 80 %, altersabhängig) |\n| **PEF** (Peak Expiratory Flow) | maximale exspiratorische Atemstromstärke | ~ 8–10 l/s |\n| **MEF₇₅/₅₀/₂₅** | maximaler exspiratorischer Fluss bei 75/50/25 % verbleibender VK | – (Marker v. a. für kleine Atemwege) |\n| **Atemminutenvolumen** (AMV = AF × AZV) | in Ruhe | ~ 6–8 l/min (12–16 × 0,5 l) |\n| **Alveoläre Ventilation** (AF × (AZV − Totraum)) | | ~ 5 l/min (Totraum ~ 150 ml) |\n| **Atemgrenzwert** (MVV) | maximal willkürlich ventilierbares Volumen pro Minute | ~ 120–170 l/min |\n\n**Auswirkungen von Lungenerkrankungen:**\n- **Obstruktiv** (Asthma, COPD): **FEV₁ ↓↓, Tiffeneau-Index ↓ (< 70 %)**, PEF ↓, MEF ↓, Atemgrenzwert ↓; FVC normal bis leicht ↓; Fluss-Volumen-Kurve „durchhängend“. Bei Asthma Reversibilität nach Bronchodilatator.\n- **Restriktiv** (Lungenfibrose, Thoraxdeformität, Pleuraerkrankungen, neuromuskulär): **VK/FVC ↓**, FEV₁ proportional ↓, **Tiffeneau-Index normal oder ↑**.\n\n**Atemwegswiderstand (R_aw, normal ~ 0,1–0,2 kPa·s/l bzw. ~ 1–2 cmH₂O·s/l) hängt ab von:**\n- **Radius der Atemwege** (Hagen-Poiseuille: R = 8ηl / (πr⁴) → **4. Potenz**!)\n- **Strömungsart:** laminar vs. turbulent (Trachea/große Bronchien turbulent → Gasdichte relevant)\n- **Lungenvolumen:** größeres Volumen → radiale Zugkräfte erweitern die Atemwege → R ↓\n- **Bronchomotorik:** Parasympathikus (ACh, M₃) → Bronchokonstriktion; β₂-Adrenozeptoren (Adrenalin) → Bronchodilatation; Entzündungsmediatoren (Histamin, Leukotriene)\n- Schleim, Schleimhautödem, **dynamische Atemwegskompression** bei forcierter Exspiration\n\n**Anatomische Strukturen:**\n- Der Großteil des Widerstands liegt in den **oberen Atemwegen** (Nase – bei Nasenatmung ca. 50 % –, Pharynx, Larynx) und in **Trachea sowie großen und mittelgroßen Bronchien** (bis ca. 7. Generation).\n- **Kleine Atemwege** (< 2 mm) tragen wegen ihres riesigen Gesamtquerschnitts nur wenig bei (~ 10–20 %) → „stille Zone“: Erkrankungen dort werden spät erkannt."
    },
@@ -237,6 +243,7 @@ const block2Physiologie = [
     "id": "phys-27",
     "nr": 27,
     "title": "Normo-, Hypo- und Hyperventilation",
+    "podcast": "",
     "q": "Was versteht man unter Normoventilation, Hypoventilation und Hyperventilation? Erklären Sie den Einfluss willentlicher Hyperventilation auf die Partialdrücke der Atemgase in den Alveolen und im Blut.",
     "a": "- Definitionen beziehen sich auf die **alveoläre Ventilation im Verhältnis zur CO₂-Produktion**, messbar am **arteriellen P_CO₂**:\n  - **Normoventilation:** P_aCO₂ ~ **40 mmHg** (35–45 mmHg, ~ 5,3 kPa).\n  - **Hypoventilation:** Ventilation zu gering → **P_aCO₂ > 45 mmHg** (Hyperkapnie), P_AO₂ ↓ → **respiratorische Azidose**.\n  - **Hyperventilation:** Ventilation über dem Bedarf → **P_aCO₂ < 35 mmHg** (Hypokapnie) → **respiratorische Alkalose**.\n- Abgrenzung: **Hyperpnoe** = gesteigerte, aber dem Bedarf angepasste Ventilation (z. B. Arbeit, P_aCO₂ normal); **Tachypnoe** = erhöhte Atemfrequenz.\n\n**Willentliche Hyperventilation:**\n- **Alveolen:** P_ACO₂ ↓ deutlich (z. B. 40 → 20 mmHg); P_AO₂ ↑ (z. B. 100 → ~ 120 mmHg; alveoläre Gasgleichung).\n- **Blut:**\n  - P_aCO₂ ↓ → **pH ↑** (respiratorische Alkalose), HCO₃⁻ leicht ↓.\n  - P_aO₂ ↑, aber **O₂-Gehalt steigt kaum**, da Hämoglobin bereits zu ~ 97–98 % gesättigt ist.\n- **Folgen:**\n  - **Zerebrale Vasokonstriktion** (CO₂ ↓) → Schwindel, Sehstörungen, Bewusstseinstrübung\n  - Linksverschiebung der O₂-Bindungskurve (Bohr-Effekt) → erschwerte O₂-Abgabe ans Gewebe\n  - Alkalose → mehr Ca²⁺ an Albumin gebunden → **freies Ca²⁺ ↓** → **Hyperventilationstetanie** (Kribbeln, Pfötchenstellung, Karpopedalspasmen)\n  - Atemantrieb ↓ → nachfolgende **Apnoe**; Gefahr beim Tauchen (Bewusstlosigkeit durch Hypoxie, bevor CO₂-Atemreiz einsetzt)"
    }
@@ -245,6 +252,7 @@ const block2Physiologie = [
  {
   "id": "herz",
   "title": "Herz / Kreislauf",
+  "podcast": "https://open.spotify.com/episode/58oltDF6YjmEgQrsiZAZUF?si=nzsI1zwFT3SKX9R6pY68ew",
   "items": [
    {
     "id": "phys-28",
@@ -258,7 +266,7 @@ const block2Physiologie = [
     "id": "phys-29",
     "nr": 29,
     "title": "Erregungsbildung und -weiterleitung, Schrittmacherhierarchie",
-    "podcast": "https://open.spotify.com/episode/0wGk8S4cUvoDDpFVCkTni3?si=dbbcbc4641d94c98",
+    "podcast": "",
     "q": "Beschreiben Sie die Erregungsbildung und Erregungsweiterleitung am Herzen und die involvierten Strukturen. Welche Unterschiede gibt es zwischen primärem, sekundärem und tertiärem Schrittmacher (Funktion, Ruhemembranpotential, Eigenfrequenz)?",
     "a": "**Erregungsbildungs- und Leitungssystem:**\n1. **Sinusknoten** (rechter Vorhof, Einmündung der V. cava superior) – Erregungsbildung (Spontandepolarisation).\n2. Ausbreitung über das **Vorhofmyokard** (~ 0,5–1 m/s; Bachmann-Bündel zum linken Vorhof).\n3. **AV-Knoten** – einzige elektrische Verbindung zwischen Vorhöfen und Kammern (Faserring isoliert); **langsame Leitung (~ 0,05 m/s)** → **Verzögerung ~ 0,1 s** (PQ-Strecke) → Vorhöfe kontrahieren vor den Kammern; **Frequenzfilter** (Schutz bei Vorhofflimmern).\n4. **His-Bündel** → **Tawara-Schenkel** (rechts; links mit anteriorem und posteriorem Faszikel) im Septum.\n5. **Purkinje-Fasern** (schnellste Leitung, **2–4 m/s**) → nahezu gleichzeitige Erregung der Kammern.\n6. **Kammermyokard** (~ 1 m/s): Ausbreitung von endokardial nach epikardial, von der Spitze zur Basis.\n\n**Schrittmacherhierarchie:**\n\n| | Primär | Sekundär | Tertiär |\n|---|---|---|---|\n| Struktur | Sinusknoten | AV-Knoten (AV-junktional) | His-Bündel, Tawara-Schenkel, Purkinje-Fasern |\n| Eigenfrequenz | **60–80/min** | **40–60/min** | **20–40/min** |\n| Max. diastolisches Potential („Ruhepotential“) | ~ −60 bis −70 mV, instabil | ~ −60 bis −70 mV | ~ −80 bis −90 mV (Purkinje) |\n| Aufstrich | Ca²⁺-abhängig, langsam | Ca²⁺-abhängig, langsam | Na⁺-abhängig, schnell |\n| Funktion | normaler Taktgeber (Sinusrhythmus) | Ersatzrhythmus bei Ausfall des Sinusknotens | Kammerersatzrhythmus, z. B. bei totalem AV-Block |\n\n- Der schnellste Schrittmacher bestimmt die Herzfrequenz; nachgeordnete Zentren werden durch ihn ständig vorzeitig erregt (**„overdrive suppression“**) und übernehmen nur bei Ausfall oder Leitungsblock."
    },
@@ -266,7 +274,7 @@ const block2Physiologie = [
     "id": "phys-30",
     "nr": 30,
     "title": "Schrittmacherzellen vs. Arbeitsmyokard, Aktionspotential",
-    "podcast": "https://open.spotify.com/episode/04Ro4KpQ2P8UZmnFw1zUgH?si=39f8eb11d27d433c",
+    "podcast": "",
     "q": "Nennen Sie Unterschiede zwischen Schrittmacherzellen und Arbeitsmyokard, und beschreiben Sie die Komponenten des Aktionspotentials (inklusive Ionenströme).",
     "a": "**Schrittmacherzellen (Sinusknoten, AV-Knoten):**\n- **Kein stabiles Ruhepotential**; maximales diastolisches Potential ~ −60 bis −70 mV.\n- **Phase 4 – langsame diastolische Depolarisation:**\n  - **I_f („funny current“)**: HCN-Kanäle, öffnen bei Hyperpolarisation, Na⁺-Einstrom (> K⁺-Ausstrom)\n  - **T-Typ-Ca²⁺-Strom**, abnehmender K⁺-Ausstrom, Ca²⁺-Freisetzung aus dem SR + Na⁺/Ca²⁺-Austauscher („Ca²⁺-clock“)\n- **Schwelle** ~ −40 mV.\n- **Phase 0 – langsamer Aufstrich** durch **L-Typ-Ca²⁺-Kanäle** (I_Ca,L); kein schneller Na⁺-Strom (Na⁺-Kanäle bei diesem Potential inaktiviert), kaum Overshoot.\n- **Phase 3 – Repolarisation** durch K⁺-Ausstrom (I_K); kein ausgeprägtes Plateau.\n- Wenige Myofibrillen (kaum kontraktil).\n- **Modulation:** Sympathikus (Noradrenalin, β₁ → cAMP ↑ → I_f und I_Ca ↑) → **positiv chronotrop**; Vagus (ACh, M₂ → I_K,ACh ↑, I_f ↓) → **negativ chronotrop**.\n\n**Arbeitsmyokard (Vorhof, Kammer):**\n- **Phase 4 – stabiles Ruhepotential ~ −90 mV** (einwärtsgleichrichtender K⁺-Strom I_K1; Na⁺/K⁺-ATPase).\n- **Phase 0 – schneller Aufstrich:** spannungsgesteuerte **Na⁺-Kanäle** (Nav1.5) → schneller Na⁺-Einstrom, Overshoot bis ca. +20–30 mV.\n- **Phase 1 – frühe (initiale) Repolarisation:** transienter K⁺-Ausstrom (**I_to**), Na⁺-Kanal-Inaktivierung.\n- **Phase 2 – Plateau** (~ 200–300 ms): Gleichgewicht aus **Ca²⁺-Einstrom (L-Typ)** und K⁺-Ausstrom (I_Kr, I_Ks). Der Ca²⁺-Einstrom triggert die **Ca²⁺-induzierte Ca²⁺-Freisetzung** aus dem SR (RyR2) → Kontraktion.\n- **Phase 3 – Repolarisation:** L-Typ-Kanäle inaktivieren, **K⁺-Ausstrom (I_Kr, I_Ks, I_K1)** überwiegt.\n- **Lange absolute Refraktärzeit** (fast so lang wie das AP und die Kontraktion) → **kein Tetanus**, Schutz vor kreisenden Erregungen.\n\n**Zusammenfassung der Unterschiede:** Schrittmacher = Spontandepolarisation, weniger negatives Potential, Ca²⁺-getragener langsamer Aufstrich, kein Plateau, kaum kontraktil. Arbeitsmyokard = stabiles Ruhepotential, Na⁺-getragener schneller Aufstrich, langes Plateau, kontraktil, nicht spontan erregbar."
    },
@@ -322,7 +330,7 @@ const block2Physiologie = [
     "id": "phys-37",
     "nr": 37,
     "title": "Druckpuls und Strömungspuls",
-    "podcast": "https://open.spotify.com/episode/3iJV0RtZQO6FU9fq5ojsYs?si=e88a2baf73224b1b",
+    "podcast": "",
     "q": "Unterscheiden Sie die Begriffe „Druckpuls“ und „Strömungspuls“. Beschreiben Sie Gesamtquerschnitt und Strömungsgeschwindigkeit in den unterschiedlichen Gefäßabschnitten.",
     "a": "**Druckpuls:**\n- Die bei jeder Systole entstehende **Druckwelle**, die sich entlang der elastischen Arterienwand ausbreitet (tastbarer Puls).\n- **Pulswellengeschwindigkeit (PWG):** Aorta ~ **4–6 m/s**, periphere muskuläre Arterien ~ **8–12 m/s**; nimmt mit Steifigkeit (Alter, Arteriosklerose, Hypertonie) zu.\n- Die Druckamplitude **nimmt peripher zu** (Reflexion an Verzweigungen, Überlagerung von hin- und rücklaufender Welle) → peripher höherer systolischer Druck.\n\n**Strömungspuls:**\n- Die pulsatile Schwankung der **Strömungsgeschwindigkeit bzw. des Volumenstroms** des Blutes selbst.\n- Das Blut fließt **viel langsamer** als sich die Pulswelle ausbreitet (Aorta: Mittelwert ~ 0,2 m/s, systolische Spitze ~ 1 m/s).\n- In der Aorta kurzzeitig **Rückströmung** in der frühen Diastole (bis zum Klappenschluss).\n- Die Pulsatilität des Strömungspulses **nimmt peripher ab** (Windkessel, Widerstandsgefäße) → in den Kapillaren nahezu kontinuierlicher Fluss.\n\n**Merksatz:** Druckpuls = Ausbreitung einer **Welle** (schnell, m/s); Strömungspuls = Bewegung der **Blutteilchen** (langsam, cm/s).\n\n**Gesamtquerschnitt und Strömungsgeschwindigkeit** (Kontinuitätsgesetz Q = A × v, siehe Frage 34):\n- Aorta: Querschnitt ~ 4–5 cm², v ~ 20 cm/s (Mittelwert)\n- Arterien → Arteriolen: Gesamtquerschnitt nimmt zu (~ 400 cm²), v nimmt ab\n- **Kapillaren: größter Gesamtquerschnitt (~ 3.000–5.000 cm²), kleinste Geschwindigkeit (~ 0,03 cm/s)** → Stoffaustausch\n- Venolen → Venen → Hohlvenen: Querschnitt nimmt wieder ab (~ 10–20 cm²), v steigt wieder an (~ 10–20 cm/s), bleibt aber unter der Aortengeschwindigkeit, da der venöse Gesamtquerschnitt größer ist."
    }
@@ -331,12 +339,13 @@ const block2Physiologie = [
  {
   "id": "calcium",
   "title": "Calcium- und Phosphathaushalt",
+  "podcast": "https://open.spotify.com/episode/7Ip3cLTlNtpd4VX61oG8hT?si=1ayh1uloQ_eJ2zKs0M-E4A",
   "items": [
    {
     "id": "phys-38",
     "nr": 38,
     "title": "Calcium im Körper",
-    "podcast": "https://open.spotify.com/episode/6Q0kU0FpU3h2bcs4WOcEA6?si=a4266ed2e3fe4aa3",
+    "podcast": "",
     "q": "Beschreibe, in welchen Organen und in welchen Mengen Calcium im Körper vorkommt. Wie hoch ist die extra- und die intrazelluläre Calciumkonzentration? Welche tägliche Calcium-Einnahme wird Erwachsenen empfohlen? Welches Hormon senkt den Calciumspiegel im Blut?",
     "a": "- **Gesamtmenge:** ca. **1–1,2 kg** Calcium (~ 1,5–2 % des Körpergewichts).\n- **Verteilung:**\n  - **~ 99 % in Knochen und Zähnen** (als Hydroxylapatit) – Speicher und Stützfunktion\n  - **~ 1 %** in Weichgeweben/intrazellulär\n  - **~ 0,1 %** im Extrazellulärraum (~ 1 g)\n- **Extrazellulär (Plasma):**\n  - **Gesamt-Ca²⁺: 2,2–2,6 mmol/l** (~ 9–10,5 mg/dl)\n  - davon **~ 50 % frei ionisiert (~ 1,1–1,3 mmol/l)** – biologisch aktiv und reguliert\n  - ~ 40 % proteingebunden (v. a. Albumin; pH-abhängig: Alkalose → mehr gebunden)\n  - ~ 10 % komplexgebunden (Citrat, Phosphat, Bicarbonat)\n- **Intrazellulär (Zytosol, frei):** **~ 0,1 µmol/l (10⁻⁷ mol/l)** in Ruhe; bei Aktivierung Anstieg auf ~ 1–10 µmol/l. In Speichern (ER/SR, Mitochondrien) deutlich höher.\n  - → Gradient extra-/intrazellulär ca. **10.000 : 1** – Grundlage für die Funktion als Second Messenger.\n- **Empfohlene Zufuhr (Erwachsene, D-A-CH):** **1000 mg/Tag** (Jugendliche 13–18 J. 1200 mg/Tag).\n- **Calciumsenkendes Hormon:** **Calcitonin** aus den **C-Zellen (parafollikuläre Zellen) der Schilddrüse** (hemmt Osteoklasten, fördert renale Ca²⁺-Ausscheidung).\n  - Gegenspieler (Ca²⁺ ↑): **Parathormon (PTH)** und **Calcitriol** (aktives Vitamin D)."
    },
