@@ -5,7 +5,7 @@ const block2Histologie = [
  {
   "id": "b1",
   "title": "Block 1 · Epithel & Haut",
-  "podcast": "",
+  "podcast": "https://open.spotify.com/episode/2JVTEpEY30VxR2WN3p26QM?si=jOcYgpVYRs68Teb8CwzQKQ",
   "preps": [
    {
     "id": "h1-1",
@@ -172,7 +172,7 @@ const block2Histologie = [
  {
   "id": "b2",
   "title": "Block 2 · Binde- & Stützgewebe",
-  "podcast": "",
+  "podcast": "https://open.spotify.com/episode/2vvCKDrNMQsUrm12tkvgQ2?si=7n4I2EZeR_GnCj99uX39ow",
   "preps": [
    {
     "id": "h2-1",
@@ -331,7 +331,7 @@ const block2Histologie = [
  {
   "id": "b3",
   "title": "Block 3 · Muskelgewebe",
-  "podcast": "",
+  "podcast": "https://open.spotify.com/episode/6SzSUXDwQJXRDzmE041N9Q?si=U1EkF6XzTU62EHMJ4xjOqg",
   "preps": [
    {
     "id": "h3-1",
@@ -455,7 +455,7 @@ const block2Histologie = [
  {
   "id": "b4",
   "title": "Block 4 · Nervengewebe",
-  "podcast": "",
+  "podcast": "https://open.spotify.com/episode/52KwQKmkUsiM3urWWyFlAU?si=7q8YuIaAQ_SUdaTuuDuzdQ",
   "preps": [
    {
     "id": "h4-1",
